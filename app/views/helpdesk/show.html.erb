@@ -67,6 +67,11 @@
       </div>
     </div>
     <% end %>
+    <hr />
+    <div class="form-group" id="new-attachments" style="display:inline-block;">
+        <label><b>Attachments</b></label>
+        <p><%= render :partial => 'attachments/customer_attachment', :locals => {:container => @issue } %></p>
+    </div>
     <div class="form-group">
         <hr />
         <p>
