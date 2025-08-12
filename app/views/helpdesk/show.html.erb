@@ -1,0 +1,79 @@
+<div class="registration-form">
+    <%= form_tag helpdesk_add_notes_path(params[:enckey]) do |f| %>
+    <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+          <div class="modal-header">
+            <h5 class="modal-title" id="myModalLabel">Email</h5>
+            <span class="btn-close" data-bs-dismiss="modal" aria-label="Close"></span>
+          </div>
+          <div class="modal-body">
+            <input type="text" class="form-control" id="email" name="email" style="border: 2px solid;">
+          </div>
+          <div class="modal-footer">
+            <span type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</span>
+            <input type="submit" class="btn btn-primary" value="Invite" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-icon" style="background: none;">
+        <img src="https://www.dcsnetworks.sg/uploads/7/9/4/7/79473268/6711601.jpg" />
+    </div>
+    <%= render_flash_messages %>
+    <div class="form-group">
+        <p>
+            <span style="width: auto;float: right;"  data-bs-toggle="modal" data-bs-target="#myModal" class="btn btn-block create-account">Invite</span>
+        </p>
+    </div>
+    <div class="form-group">
+        <p>
+            <label>Our Ref Number:</label> <span><b>#<%= @issue.id %></b></span>
+        </p>
+    </div>
+    <div class="form-group">
+        <p>
+            <label>Status:</label> <span><b><%= @issue.status.name %></b></span>
+        </p>
+    </div>
+    <div class="form-group">
+        <p>
+            <label>Subject:</label> <span><b><%= @issue.subject %></b></span>
+        </p>
+    </div>
+    <div class="form-group">
+        <p>
+            <label>Description:</label> <span><b><%= @issue.description %></b></span>
+        </p>
+    </div>
+    <% @journals.each do |j| %>
+    <% next if j.notes.blank? %>
+    <div class="form-group journals">
+        <div id="change-<%= j.id %>" class="journal has-notes" data-controller="quote-reply">
+        <div id="note-1" class="note">
+          <h4 class="journal-header">
+            <span class="journal-info">
+              Updated by <b style="color: blue;"><%= j.user.name %> <span class="local-time" data-time="<%= j.created_on.utc.iso8601 %>">
+  <%= j.created_on.utc.strftime("%Y-%m-%d %H:%M:%S UTC") %>
+</span></b>
+              <span id="journal-9212-private_notes" class=""></span>
+            </span>
+          </h4>
+          <div class="journal-content">
+            <div id="journal-9212-notes" class="wiki journal-note" data-quote-reply-target="content"><p><%= textilizable(j, :notes) %></p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% end %>
+    <div class="form-group">
+        <hr />
+        <p>
+            <label><b>Notes:</b></label>
+            <%= text_area_tag 'notes', '', rows: 10, style: 'border: 2px solid' %>
+        </p>
+        <p><input style="width: auto;" type="submit" id="submit_button" class="btn btn-block create-account" value="Submit" onclick="document.getElementById('email').value = ''"></p>
+    </div>
+</div>
+<% end %>
