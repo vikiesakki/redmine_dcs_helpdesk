@@ -1,0 +1,2 @@
+$("#journal_block").html(`<%= render partial: 'journals' %>`);
+$("#attachments_link").html(`<%= render partial: 'attachments/customer_links', :locals => {:attachments => @issue.attachments, container: @issue } %>`);

@@ -1,12 +1,14 @@
-<p>Dear <%= @customer.customer_email %>,</p>
-<p>We are writing to confirm that the service requested under Ref Number <b>#<%= @issue.id %></b> has been successfully completed.</p>
-<p><b>Service Summary:</b></p>
-<p><a href="<%= @url %>">Click for Helpdesk</a></p>
-<p>Thank you for your continued support.</p>
+<p>Dear Customer,</p>
+<p>We’ve created Ticket <b>#<%= @issue.id %></b> in our Chat Ticketing Tracking
+System to help you.</p>
+<p>Please click the link <span style="color: red;">“Let’s start our
+chat!”</span> as below so we can talk through the issue you’re
+facing and work together on a solution.</p>
+<p><a href="<%= @url %>">Let’s start our chat!</a></p>
 <br />
 <br />
 
-<p>Best Regard</p>
+<p>Best Regards</p>
 <p>DCS Helpdesk Team</p>
 <p>DCS Networks Pte Ltd</p>
 <p>52 Ubi Ave 3,#03-43 Frontier, Singapore 408867</p>

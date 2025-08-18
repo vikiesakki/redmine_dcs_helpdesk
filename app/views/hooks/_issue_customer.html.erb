@@ -1,6 +1,6 @@
 <hr />
 <p>
-  <strong>Customer Emails:</strong>
+  <strong>Invite customer for Chatting:</strong>
 </p>
 <% ics = IssueCustomer.where(issue_id: @issue.id) %>
 <% if ics.present? %>
@@ -17,7 +17,18 @@
 			<tr>
 				<td><%= ic.customer_email %></td>
 				<td><%= ic.added_str %></td>
-				<td><%= link_to 'delete', helpdesk_destroy_path(@issue,ic), method: 'delete', "data-confirm"=>"Are you sure?", class: 'icon-only icon-del' %></td>
+				<td>
+					<a onclick="navigator.clipboard.writeText('<%= helpdesk_show_url(:enckey => ic.encrypt_for_url) %>')
+					  .then(() => {
+					    alert('Link to copied!');
+					  })
+					  .catch(err => {
+					    console.error('Copy failed', err);
+					    alert('Failed to copy text');
+					  });" href="#">Copy Link</a>
+					<%= link_to 'delete', helpdesk_destroy_path(@issue,ic), method: 'delete', "data-confirm"=>"Are you sure?", class: 'icon-only icon-del' %>
+						
+					</td>
 			</tr>
 		<% end %>
 	</tbody>
@@ -25,7 +36,7 @@
 <% end %>
 <div class="splitcontent">
 	<%= form_tag helpdesk_update_path(@issue) do |f| %>
-		<div class="label"><span>Customer Email</span>:</div>
+		<!--<div class="label"><span></span>:</div> -->
 		<%= text_field_tag :customer %>
 		<input type="submit" id="submit_button" class="btn btn-block create-account" value="Submit">
 	<% end %>

@@ -12,11 +12,37 @@ class CustomerMailer < ActionMailer::Base
   	send_helpdesk_notification(issue_customer)
 	end
 
+  def self.deliver_helpdesk_closed(issue)
+    send_helpdesk_closed(issue)
+  end
+
+  def self.deliver_helpdesk_notes_added(issue)
+    send_helpdesk_notes_added(issue)
+  end
+
+  def send_helpdesk_notes_added(issue, notes)
+    @issue = issue
+    @to = IssueCustomer.where(issue_id: issue.id).pluck(:customer_email)
+    @url = url_for(:controller => 'helpdesk', :action => 'show', :enckey => @customer.encrypt_for_url)
+    subj = "DCS Networks Helpdesk – Chat Ticketing Tracking #[#{@issue.id}] notes added"
+    mail :to => @to,
+      :subject => subj
+  end
+
+  def send_helpdesk_closed(issue)
+    @issue = issue
+    @to = IssueCustomer.where(issue_id: issue.id).pluck(:customer_email)
+    @url = url_for(:controller => 'helpdesk', :action => 'show', :enckey => @customer.encrypt_for_url)
+    subj = "DCS Networks Helpdesk – Chat Ticketing Tracking #[#{@issue.id}] Ticket closed"
+    mail :to => @to,
+      :subject => subj
+  end
+
   def send_helpdesk_notification(issue_customer)
     @issue = issue_customer.issue
     @customer = issue_customer
     @url = url_for(:controller => 'helpdesk', :action => 'show', :enckey => @customer.encrypt_for_url)
-    subj = "Helpdesk – Ref Number #[#{@issue.id}]"
+    subj = "DCS Networks Helpdesk – Chat Ticketing Tracking #[#{@issue.id}]"
     mail :to => [issue_customer.customer_email],
       :subject => subj
   end

@@ -2,12 +2,18 @@ class HelpdeskController < ApplicationController
 	layout 'customer'
 	skip_before_action :verify_authenticity_token, only: [:upload, :remove]
 	skip_before_action :session_expiration, :user_setup, :check_if_login_required, :check_password_change, :check_twofa_activation, except: [:update, :destroy]
+	
+	helper :attachments
+
 	def update
-		if IssueCustomer.where(issue_id: params[:issue_id], customer_email: params[:customer]).blank?
-			IssueCustomer.create(added_str: User.current.name, issue_id: params[:issue_id], customer_email: params[:customer])
+		emails = params[:customer].split(',')
+		emails.each do |em|
+			if IssueCustomer.where(issue_id: params[:issue_id], customer_email: em).blank?
+				IssueCustomer.create(added_str: User.current.name, issue_id: params[:issue_id], customer_email: em)
+			end
+			ic = IssueCustomer.where(issue_id: params[:issue_id], customer_email: em).first
+			CustomerMailer.deliver_helpdesk_notification(ic).deliver_now
 		end
-		ic = IssueCustomer.where(issue_id: params[:issue_id], customer_email: params[:customer]).first
-		CustomerMailer.deliver_helpdesk_notification(ic).deliver_now
 		flash[:notice] = "Successfully updated the customer email"
 		redirect_to issue_path(ic.issue)
 	end
@@ -58,6 +64,17 @@ class HelpdeskController < ApplicationController
 	    end
 	end
 
+	def refresh
+		deckey = IssueCustomer.decrypt_url(params[:enckey])
+		email, issue_id = deckey.split('-')
+		@ic = IssueCustomer.where(issue_id: issue_id, customer_email: email).first
+		@issue = @ic.issue
+		@journals = @issue.journals
+		respond_to do |format|
+	      format.js
+	    end
+	end
+
 	def remove
 		@attachment = Attachment.find params[:id]
 		@attachment.delete
@@ -66,18 +83,39 @@ class HelpdeskController < ApplicationController
 	    end
 	end
 
+	def close
+		deckey = IssueCustomer.decrypt_url(params[:enckey])
+		email, issue_id = deckey.split('-')
+		@ic = IssueCustomer.where(issue_id: issue_id, customer_email: email).first
+		if @ic.blank?
+			flash[:error] = "Invalid request"
+		else
+			flash[:notice] = "Successfully updated"
+		end
+		@issue = @ic.issue
+		closed_status = IssueStatus.where(is_closed: true).first
+		@issue.update(status_id: closed_status.id)
+		CustomerMailer.deliver_helpdesk_closed(@issue).deliver_now
+		redirect_to helpdesk_show_path(params[:enckey])
+	end
+
 	def add_notes
 		deckey = IssueCustomer.decrypt_url(params[:enckey])
 		email, issue_id = deckey.split('-')
 		@ic = IssueCustomer.where(issue_id: issue_id, customer_email: email).first
 		@issue = @ic.issue
+		emails = params[:email].split(',')
+		customer_name = params[:customer_name]
+		ic = IssueCustomer.where(issue_id: issue_id, customer_email: email).update(name: customer_name)
 		if params[:email].present?
-			if IssueCustomer.where(issue_id: issue_id, customer_email: params[:email]).blank?
-				IssueCustomer.create(added_str: email, issue_id: issue_id, customer_email: params[:email])
+			emails.each do |em|
+				if IssueCustomer.where(issue_id: issue_id, customer_email: em).blank?
+					IssueCustomer.create(added_str: email, issue_id: issue_id, customer_email: em)
+				end
+				ic = IssueCustomer.where(issue_id: issue_id, customer_email: em).first
+				CustomerMailer.deliver_helpdesk_notification(ic).deliver_now
 			end
 			flash[:notice] = "Invite sent successfully"
-			ic = IssueCustomer.where(issue_id: issue_id, customer_email: params[:email]).first
-			CustomerMailer.deliver_helpdesk_notification(ic).deliver_now
 		else
 			if params[:notes].present?
 				notes = "Added by #{email} \n #{params[:notes]}"

@@ -1,0 +1,20 @@
+<% @journals.each do |j| %>
+<% next if j.notes.blank? %>
+<div class="form-group journals">
+    <div id="change-<%= j.id %>" class="journal has-notes" data-controller="quote-reply">
+    <div id="note-1" class="note">
+      <h4 class="journal-header">
+        <span class="journal-info">
+          Updated by <b style="color: blue;"><%= j.user.name %> <span class="local-time" data-time="<%= j.created_on.utc.iso8601 %>">
+<%= j.created_on.utc.strftime("%Y-%m-%d %H:%M:%S UTC") %>
+</span></b>
+          <span id="journal-9212-private_notes" class=""></span>
+        </span>
+      </h4>
+      <div class="journal-content">
+        <div id="journal-9212-notes" class="wiki journal-note" data-quote-reply-target="content"><p><%= textilizable(j, :notes) %></p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<% end %>

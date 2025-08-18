@@ -1,6 +1,6 @@
 <div class="registration-form">
     <%= form_tag helpdesk_add_notes_path(params[:enckey]) do |f| %>
-    <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+    <!--<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
 
@@ -17,26 +17,31 @@
           </div>
         </div>
       </div>
-    </div>
+    </div>-->
     <div class="form-icon" style="background: none;">
         <img src="https://www.dcsnetworks.sg/uploads/7/9/4/7/79473268/6711601.jpg" />
     </div>
     <%= render_flash_messages %>
-    <div class="form-group">
+    <!--<div class="form-group">
         <p>
             <span style="width: auto;float: right;"  data-bs-toggle="modal" data-bs-target="#myModal" class="btn btn-block create-account">Invite</span>
         </p>
+    </div>-->
+    <div style="text-align: center;">
+        <h3>DCS Networks Pte Ltd : Chat Ticketing Tracking</h3>
     </div>
+    <br />
+    <br />
     <div class="form-group">
         <p>
-            <label>Our Ref Number:</label> <span><b>#<%= @issue.id %></b></span>
+            <label>Ticket Number:</label> <span><b>#<%= @issue.id %></b></span>
         </p>
     </div>
-    <div class="form-group">
+    <!--<div class="form-group">
         <p>
             <label>Status:</label> <span><b><%= @issue.status.name %></b></span>
         </p>
-    </div>
+    </div> -->
     <div class="form-group">
         <p>
             <label>Subject:</label> <span><b><%= @issue.subject %></b></span>
@@ -47,6 +52,33 @@
             <label>Description:</label> <span><b><%= @issue.description %></b></span>
         </p>
     </div>
+    <div class="form-group">
+        <p>
+            <label>Could you share your name with me?:</label> <span><b>
+                <% if @issue.closed? %>
+                <%= @ic.name %>
+                <% else %>
+                <input type="text" style="padding: 10px;border: 2px solid;" name="customer_name" value="<%= @ic.name %>">
+                <% end %>
+                </b></span>
+        </p>
+    </div>
+    <div class="form-group">
+        <p>
+            <label>Would you like to invite your colleague?:</label> 
+            <li>If yes, let me know, let me have their emails as below</li>
+            <span><b>
+                <% if @issue.closed? %>
+                <%= IssueCustomer.where(issue_id: @issue.id).pluck(:customer_email).join(',') %>
+                <% else %>
+                <input placeholder="(format as this
+xxx@abc.com,yyy@abc.com,zzz@abc.com)" style="width: 75%;padding: 10px;border: 2px solid;" type="text" name="email"></b> <input type="submit" class="btn btn-primary" value="Click Submit your
+invitation" />
+            <% end %>
+            </span>
+        </p>
+    </div>
+    <div id="journal_block">
     <% @journals.each do |j| %>
     <% next if j.notes.blank? %>
     <div class="form-group journals">
@@ -67,18 +99,35 @@
       </div>
     </div>
     <% end %>
+    </div>
     <hr />
+    <div class="form-group" id="attachments_link">
+        <p><%= render :partial => 'attachments/customer_links', :locals => {:attachments => @issue.attachments, container: @issue } %></p>
+    </div>
     <div class="form-group" id="new-attachments" style="display:inline-block;">
         <label><b>Attachments</b></label>
         <p><%= render :partial => 'attachments/customer_attachment', :locals => {:container => @issue } %></p>
     </div>
+    <% unless @issue.closed? %>
     <div class="form-group">
         <hr />
         <p>
             <label><b>Notes:</b></label>
             <%= text_area_tag 'notes', '', rows: 10, style: 'border: 2px solid' %>
         </p>
-        <p><input style="width: auto;" type="submit" id="submit_button" class="btn btn-block create-account" value="Submit" onclick="document.getElementById('email').value = ''"></p>
+        <p><input style="width: auto;" type="submit" id="submit_button" class="btn btn-block create-account" value="Submit" onclick="document.getElementById('email').value = ''">
+        <a href="" class="btn btn-block create-account">Problem Solved</a>
+        </p>
     </div>
+    <% end %>
 </div>
 <% end %>
+
+<script>
+    setInterval(function() {
+      Rails.ajax({
+        url: "<%= helpdesk_refresh_path(params[:enckey]) %>",
+        type: "GET"
+      });
+    }, 10000);
+</script>
