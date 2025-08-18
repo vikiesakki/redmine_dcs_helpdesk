@@ -1,9 +1,15 @@
 <p>Dear Customer,</p>
 <p>This is follow up for this ticket <b>#<%= @issue.id %></b> in our Chat Ticketing Tracking.</p>
 <p>Notes added by <%= @journal.user.name %></p>
-<p><%= @journal.notes %></p>
+<hr />
+<p><b>Notes: </b></p>
+<p>
+	<em>
+		<%= @journal.notes %></p>
+	</em>
+<hr />
 <p>Please click the link to reply back</p>
-<p><a href="<%= @url %>">Reply!</a></p>
+<p><a style="color: red;" href="<%= @url %>">Reply!</a></p>
 <br />
 <br />
 
