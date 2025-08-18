@@ -1,5 +1,6 @@
 $LOAD_PATH.unshift "#{File.dirname(__FILE__)}/lib/"
 require 'issue_customer_hook'
+require 'journal_patch'
 Redmine::Plugin.register :redmine_helpdesk do
   name 'Redmine Helpdesk plugin'
   author 'Vignesh EsakkiMuthu'
