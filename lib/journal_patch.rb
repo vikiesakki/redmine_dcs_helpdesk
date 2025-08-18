@@ -17,7 +17,7 @@ module JournalPatch
       if notes.present? && user.is_a?(User)
         ics = IssueCustomer.where(issue_id: journalized_id)
         ics.each do |ic|
-          CustomerMailer.deliver_helpdesk_notes_added(journalized, self, ic)
+          CustomerMailer.deliver_helpdesk_notes_added(journalized, self, ic).deliver_now
         end
       end
     end
