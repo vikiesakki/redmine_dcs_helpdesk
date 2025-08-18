@@ -4,6 +4,7 @@ class CustomerMailer < ActionMailer::Base
   helper :application
   helper :issues
   helper :custom_fields
+  include Rails.application.routes.url_helpers
 
   include Redmine::I18n
   include Roadie::Rails::Automatic
