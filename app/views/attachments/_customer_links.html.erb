@@ -5,7 +5,7 @@
 <% for attachment in attachments %>
 <tr>
   <td>
-    <%= link_to attachment.filename, service_download_path(attachment), class: 'icon-only icon-download ', title: l(:button_download), download: true, icon: 'download' -%>
+    <%= link_to attachment.filename, service_download_url(attachment), class: 'icon-only icon-download ', title: l(:button_download), download: true, icon: 'download' -%>
   </td>
   <td><%= attachment.description unless attachment.description.blank? %></td>
   <% if attachment.author.is_a?(AnonymousUser) %>
