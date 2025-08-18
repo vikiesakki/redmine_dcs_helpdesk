@@ -95,7 +95,10 @@ class HelpdeskController < ApplicationController
 		@issue = @ic.issue
 		closed_status = IssueStatus.where(is_closed: true).first
 		@issue.update(status_id: closed_status.id)
-		CustomerMailer.deliver_helpdesk_closed(@issue).deliver_now
+		ics = IssueCustomer.where(issue_id: issue.id)
+		ics.each do |ic|
+			CustomerMailer.deliver_helpdesk_closed(@issue, ic).deliver_now
+		end
 		redirect_to helpdesk_show_path(params[:enckey])
 	end
 

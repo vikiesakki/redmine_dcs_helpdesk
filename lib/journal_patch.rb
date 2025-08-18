@@ -15,7 +15,10 @@ module JournalPatch
       return unless journalized_type == 'Issue'
       return if IssueCustomer.where(issue_id: journalized_id).blank?
       unless notes.blank? || user.is_a?(AnonymousUser)
-        CustomerMailer.deliver_helpdesk_notes_added(journalized)
+        ics = IssueCustomer.where(issue_id: journalized_id)
+        ics.each do |ic|
+          CustomerMailer.deliver_helpdesk_notes_added(journalized, self, ic)
+        end
       end
     end
 
