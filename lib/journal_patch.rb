@@ -14,7 +14,7 @@ module JournalPatch
     def send_email_to_customer
       return unless journalized_type == 'Issue'
       return if IssueCustomer.where(issue_id: journalized_id).blank?
-      unless notes.present? || user.is_a?(AnonymousUser)
+      if notes.present? || user.is_a?(User)
         ics = IssueCustomer.where(issue_id: journalized_id)
         ics.each do |ic|
           CustomerMailer.deliver_helpdesk_notes_added(journalized, self, ic)
