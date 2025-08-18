@@ -116,13 +116,13 @@ invitation" />
             <%= text_area_tag 'notes', '', rows: 10, style: 'border: 2px solid' %>
         </p>
         <p><input style="width: auto;" type="submit" id="submit_button" class="btn btn-block create-account" value="Submit" onclick="document.getElementById('email').value = ''">
-        <a href="" class="btn btn-block create-account">Problem Solved</a>
+        <a href="<%= helpdesk_close_path(params[:enckey]) %>" onclick="confirm('are you sure want to close this ticket?')" style="background: red;" class="btn btn-block create-account">Problem Solved</a>
         </p>
     </div>
     <% end %>
 </div>
 <% end %>
-
+<% unless @issue.closed? %>
 <script>
     setInterval(function() {
       Rails.ajax({
@@ -131,3 +131,4 @@ invitation" />
       });
     }, 10000);
 </script>
+<% end %>
