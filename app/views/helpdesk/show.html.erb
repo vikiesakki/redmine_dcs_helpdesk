@@ -18,25 +18,32 @@
         </div>
       </div>
     </div>-->
-    <div class="form-icon" style="background: none;">
-        <img src="https://www.dcsnetworks.sg/uploads/7/9/4/7/79473268/6711601.jpg" />
+    <div class="header">
+        <img style="float: left;width: 100px;" src="https://www.dcsnetworks.sg/uploads/7/9/4/7/79473268/6711601.jpg" alt="DCS Networks Logo" class="logo">
+        <h2>DCS Networks Pte Ltd - Chat Ticketing Tracking Systems</h2>
+        <p>Ticket Number : <span  style="color: red;" class="ticket-number">#<%= @issue.id %></span></p>
     </div>
+    <!--<div class="form-icon" style="background: none;">
+        <img src="https://www.dcsnetworks.sg/uploads/7/9/4/7/79473268/6711601.jpg" />
+    </div> -->
     <%= render_flash_messages %>
     <!--<div class="form-group">
         <p>
             <span style="width: auto;float: right;"  data-bs-toggle="modal" data-bs-target="#myModal" class="btn btn-block create-account">Invite</span>
         </p>
     </div>-->
+    <!--
     <div style="text-align: center;">
         <h3>DCS Networks Pte Ltd : Chat Ticketing Tracking</h3>
-    </div>
+    </div>-->
     <br />
     <br />
+    <!--
     <div class="form-group">
         <p>
             <label>Ticket Number:</label> <span><b>#<%= @issue.id %></b></span>
         </p>
-    </div>
+    </div> -->
     <!--<div class="form-group">
         <p>
             <label>Status:</label> <span><b><%= @issue.status.name %></b></span>
@@ -72,8 +79,7 @@
                 <%= IssueCustomer.where(issue_id: @issue.id).pluck(:customer_email).join(',') %>
                 <% else %>
                 <input placeholder="(format as this
-xxx@abc.com,yyy@abc.com,zzz@abc.com)" style="width: 75%;padding: 10px;border: 2px solid;" type="text" name="email"></b> <input type="submit" class="btn btn-primary" value="Click Submit your
-invitation" />
+xxx@abc.com,yyy@abc.com,zzz@abc.com)" style="width: 75%;padding: 10px;border: 2px solid;" type="text" name="email"></b> <input type="submit" class="btn btn-primary" value="Submit" />
             <% end %>
             </span>
         </p>
@@ -87,7 +93,7 @@ invitation" />
           <h4 class="journal-header">
             <span class="journal-info">
               Updated by <b style="color: blue;"><%= j.user.name %> <span class="local-time" data-time="<%= j.created_on.utc.iso8601 %>">
-  <%= j.created_on.utc.strftime("%Y-%m-%d %H:%M:%S UTC") %>
+  <%= Time.parse(j.created_on).in_time_zone("Singapore").strftime("%d-%m-%Y %H:%M:%S") %>
 </span></b>
               <span id="journal-9212-private_notes" class=""></span>
             </span>
@@ -112,7 +118,7 @@ invitation" />
     <div class="form-group">
         <hr />
         <p>
-            <label><b>Notes:</b></label>
+            <label style="color: red;"><b>Your Message to us:</b></label>
             <%= text_area_tag 'notes', '', rows: 10, style: 'border: 2px solid' %>
         </p>
         <p><input style="width: auto;" type="submit" id="submit_button" class="btn btn-block create-account" value="Submit" onclick="document.getElementById('email').value = ''">
