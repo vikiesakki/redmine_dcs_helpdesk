@@ -3,7 +3,13 @@
 <div class="form-group journals">
     <div id="change-<%= j.id %>" class="journal has-notes" data-controller="quote-reply">
     <div id="note-1" class="note">
-      <h4 class="journal-header">
+      <h4 class="journal-header"
+      <%
+        if j.id > @last_id.to_i 
+      %>
+      style = "background: red;color: white;"
+      <% end %>
+      >
         <span class="journal-info">
           Updated by <b style="color: blue;"><%= j.user.name %> <span class="local-time" data-time="<%= j.created_on.utc.iso8601 %>">
 <%= j.created_on.in_time_zone("Singapore").strftime("%d-%m-%Y %H:%M:%S") %>

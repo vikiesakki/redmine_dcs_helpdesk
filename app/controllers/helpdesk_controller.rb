@@ -68,6 +68,7 @@ class HelpdeskController < ApplicationController
 	def refresh
 		deckey = IssueCustomer.decrypt_url(params[:enckey])
 		email, issue_id = deckey.split('-')
+		@last_id = params[:last_journal_id]
 		@ic = IssueCustomer.where(issue_id: issue_id, customer_email: email).first
 		@issue = @ic.issue
 		@journals = @issue.journals

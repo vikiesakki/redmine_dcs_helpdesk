@@ -59,6 +59,7 @@
             <label>Description:</label> <span><b><%= @issue.description %></b></span>
         </p>
     </div>
+    last_journal_id
     <div class="form-group">
         <p>
             <label>Could you share your name with me?:</label> <span><b>
@@ -82,6 +83,11 @@
 xxx@abc.com,yyy@abc.com,zzz@abc.com)" style="width: 75%;padding: 10px;border: 2px solid;" type="text" name="email"></b> <input type="submit" class="btn btn-primary" value="Submit" />
             <% end %>
             </span>
+        </p>
+    </div>
+    <div class="form-group">
+        <p>
+            <label>Helpdesk Email:</label> <span><b><a href="mailto:helpdesk@dcsnpl.sg">helpdesk@dcsnpl.sg</a></b></span>
         </p>
     </div>
     <div id="journal_block">
@@ -118,6 +124,7 @@ xxx@abc.com,yyy@abc.com,zzz@abc.com)" style="width: 75%;padding: 10px;border: 2p
     <div class="form-group">
         <hr />
         <p>
+            <input type="hidden" id="last_journal_id" value="<%= @journals.last.try(:id).to_i %>">
             <label style="color: red;"><b>Your Message to us:</b></label>
             <%= text_area_tag 'notes', '', rows: 10, style: 'border: 2px solid' %>
         </p>
@@ -130,11 +137,13 @@ xxx@abc.com,yyy@abc.com,zzz@abc.com)" style="width: 75%;padding: 10px;border: 2p
 <% end %>
 <% unless @issue.closed? %>
 <script>
-    setInterval(function() {
-      Rails.ajax({
-        url: "<%= helpdesk_refresh_path(params[:enckey]) %>",
-        type: "GET"
-      });
-    }, 10000);
+    $(document).ready(function(){
+        setInterval(function() {
+          Rails.ajax({
+            url: "<%= helpdesk_refresh_path(params[:enckey]) %>?last_journal_id="+ $('#last_journal_id').val(),
+            type: "GET"
+          });
+        }, 10000);    
+    })
 </script>
 <% end %>
