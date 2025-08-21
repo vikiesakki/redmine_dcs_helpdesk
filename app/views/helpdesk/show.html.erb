@@ -137,13 +137,11 @@ xxx@abc.com,yyy@abc.com,zzz@abc.com)" style="width: 75%;padding: 10px;border: 2p
 <% end %>
 <% unless @issue.closed? %>
 <script>
-    $(document).ready(function(){
         setInterval(function() {
           Rails.ajax({
             url: "<%= helpdesk_refresh_path(params[:enckey]) %>?last_journal_id="+ document.getElementById('last_journal_id').value,
             type: "GET"
           });
-        }, 10000);    
-    })
+        }, 10000);
 </script>
 <% end %>
