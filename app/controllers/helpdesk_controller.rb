@@ -123,8 +123,9 @@ class HelpdeskController < ApplicationController
 			flash[:notice] = "Invite sent successfully"
 		else
 			if params[:notes].present?
-				notes = "Added by #{email} \n #{params[:notes]}"
+				notes = "#{params[:notes]}"
 				journal = @issue.init_journal(User.current, notes)
+				journal.ic_id = @ic.id
 				journal.save
 				flash[:notice] = "Added successfully"
 			else

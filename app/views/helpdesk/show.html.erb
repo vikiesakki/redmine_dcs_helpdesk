@@ -98,7 +98,7 @@ xxx@abc.com,yyy@abc.com,zzz@abc.com)" style="width: 75%;padding: 10px;border: 2p
         <div id="note-1" class="note">
           <h4 class="journal-header">
             <span class="journal-info">
-              Updated by <b style="color: blue;"><%= j.user.name %> <span class="local-time" data-time="<%= j.created_on.utc.iso8601 %>">
+              Updated by <b style="color: blue;"><%= j.ic_id.present? ? (IssueCustomer.find(j.ic_id).name.present? ? IssueCustomer.find(j.ic_id).name : IssueCustomer.find(j.ic_id).customer_email) : j.user.name %> <span class="local-time" data-time="<%= j.created_on.utc.iso8601 %>">
   <%= j.created_on.in_time_zone("Singapore").strftime("%d-%m-%Y %H:%M:%S") %>
 </span></b>
               <span id="journal-9212-private_notes" class=""></span>
