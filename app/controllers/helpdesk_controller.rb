@@ -14,8 +14,9 @@ class HelpdeskController < ApplicationController
 			ic = IssueCustomer.where(issue_id: params[:issue_id], customer_email: em).first
 			CustomerMailer.deliver_helpdesk_notification(ic).deliver_now
 		end
+		issue = Issue.find params[:issue_id]
 		flash[:notice] = "Successfully updated the customer email"
-		redirect_to issue_path(ic.issue)
+		redirect_to issue_path(issue)
 	end
 
 	def destroy
