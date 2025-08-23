@@ -1,2 +1,6 @@
 $("#journal_block").html(`<%= render partial: 'journals' %>`);
 $("#attachments_link").html(`<%= render partial: 'attachments/customer_links', :locals => {:attachments => @issue.attachments, container: @issue } %>`);
+$("#recent_journal_id").val(<%= @issue.journals.last.try(:id) %>)
+<% if @recent_id && @recent_id.to_i < @issue.journals.last.try(:id) %>
+	document.getElementById('ding').play();
+<% end %>

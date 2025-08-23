@@ -7,6 +7,7 @@
 <table class="list issues odd-even sort-by-id sort-desc">
 	<thead>
 		<tr>
+			<th>Name</th>
 			<th>Email</th>
 			<th>Added by</th>
 			<th>Action</th>
@@ -15,6 +16,7 @@
 	<tbody>
 		<% ics.each do |ic| %>
 			<tr>
+				<td><%= ic.name %></td>
 				<td><%= ic.customer_email %></td>
 				<td><%= ic.added_str %></td>
 				<td>
@@ -34,10 +36,29 @@
 	</tbody>
 </table>
 <% end %>
-<div class="splitcontent">
+<div>
+	<input type="hidden" id="last_journal_id" value="<%= @issue.journals.last.try(:id) %>" />
+	<input type="hidden" id="recent_journal_id" value="<%= @issue.journals.last.try(:id) %>" />
 	<%= form_tag helpdesk_update_path(@issue) do |f| %>
 		<!--<div class="label"><span></span>:</div> -->
-		<%= text_field_tag :customer %>
+		<%= text_field_tag :customer, nil, placeholder: "(format as this
+xxx@abc.com,yyy@abc.com,zzz@abc.com)", style: 'width: 40%' %>
 		<input type="submit" id="submit_button" class="btn btn-block create-account" value="Submit">
 	<% end %>
 </div>
+<% if ics.present? %>
+<audio style="display: none;" id="ding" src="/assets/audio/ding-101492.mp3"></audio>
+<script>
+	$(document).ready(function(){
+		setInterval(function() {
+			if ($('.has-notes').is(':visible')) {
+	      Rails.ajax({
+	        url: "<%= journal_refresh_path(@issue) %>?last_journal_id="+ document.getElementById('last_journal_id').value + "&recent_journal_id="+ document.getElementById('recent_journal_id').value,
+	        type: "GET"
+	      });
+	      $('.has-details').hide();
+    	}
+    }, 10000);
+	});
+</script>
+<% end %>

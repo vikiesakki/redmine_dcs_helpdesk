@@ -1,15 +1,27 @@
 class HelpdeskController < ApplicationController
 	layout 'customer'
 	skip_before_action :verify_authenticity_token, only: [:upload, :remove]
-	skip_before_action :session_expiration, :user_setup, :check_if_login_required, :check_password_change, :check_twofa_activation, except: [:update, :destroy]
+	skip_before_action :session_expiration, :user_setup, :check_if_login_required, :check_password_change, :check_twofa_activation, except: [:journal_refresh, :update, :destroy]
 	
 	helper :attachments
+	helper :issues
+	helper :journals
+	helper :custom_fields
+  	helper :issue_relations
 
 	def update
 		emails = params[:customer].split(',')
 		emails.each do |em|
+			oic = IssueCustomer.where(customer_email: em).first
 			if IssueCustomer.where(issue_id: params[:issue_id], customer_email: em).blank?
-				IssueCustomer.create(added_str: User.current.name, issue_id: params[:issue_id], customer_email: em)
+				_h = {}
+				_h[:added_str] = User.current.name
+				_h[:issue_id] = params[:issue_id]
+				_h[:customer_email] = em
+				if oic.present?
+					_h[:name] = oic.name
+				end
+				IssueCustomer.create(_h)
 			end
 			ic = IssueCustomer.where(issue_id: params[:issue_id], customer_email: em).first
 			CustomerMailer.deliver_helpdesk_notification(ic).deliver_now
@@ -45,6 +57,7 @@ class HelpdeskController < ApplicationController
 	    end
 	    deckey = IssueCustomer.decrypt_url(params[:enckey])
 		email, issue_id = deckey.split('-')
+		@issue = Issue.find issue_id
 		ic = IssueCustomer.where(issue_id: issue_id, customer_email: email).first
 		if ic.blank?
 			head :not_acceptable
@@ -59,13 +72,17 @@ class HelpdeskController < ApplicationController
 	    @attachment.content_type = params[:content_type].presence
 	    @attachment.description = "added by #{email} #{@attachment.description}"
 	    saved = @attachment.save
-
+	    notes = "attachment added #{@attachment.filename}"
+	    journal = @issue.init_journal(User.current, notes)
+		journal.ic_id = ic.id
+		journal.save
 	    respond_to do |format|
 	      format.js
 	    end
 	end
 
 	def refresh
+		@recent_id = params[:recent_journal_id]
 		deckey = IssueCustomer.decrypt_url(params[:enckey])
 		email, issue_id = deckey.split('-')
 		@last_id = params[:last_journal_id]
@@ -104,6 +121,16 @@ class HelpdeskController < ApplicationController
 		redirect_to helpdesk_show_path(params[:enckey])
 	end
 
+	def journal_refresh
+		@last_id = params[:last_journal_id]
+		@recent_id = params[:recent_journal_id]
+		@issue = Issue.find params[:issue_id]
+		@journal = @issue.journals.last
+		respond_to do |format|
+	      format.js
+	    end
+	end
+
 	def add_notes
 		deckey = IssueCustomer.decrypt_url(params[:enckey])
 		email, issue_id = deckey.split('-')
@@ -114,8 +141,16 @@ class HelpdeskController < ApplicationController
 		ic = IssueCustomer.where(issue_id: issue_id, customer_email: email).update(name: customer_name)
 		if params[:email].present?
 			emails.each do |em|
-				if IssueCustomer.where(issue_id: issue_id, customer_email: em).blank?
-					IssueCustomer.create(added_str: email, issue_id: issue_id, customer_email: em)
+				oic = IssueCustomer.where(customer_email: em).first
+				if IssueCustomer.where(issue_id: params[:issue_id], customer_email: em).blank?
+					_h = {}
+					_h[:added_str] = User.current.name
+					_h[:issue_id] = params[:issue_id]
+					_h[:customer_email] = em
+					if oic.present?
+						_h[:name] = oic.name
+					end
+					IssueCustomer.create(_h)
 				end
 				ic = IssueCustomer.where(issue_id: issue_id, customer_email: em).first
 				CustomerMailer.deliver_helpdesk_notification(ic).deliver_now

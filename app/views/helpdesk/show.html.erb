@@ -125,8 +125,9 @@ xxx@abc.com,yyy@abc.com,zzz@abc.com)" style="width: 75%;padding: 10px;border: 2p
         <hr />
         <p>
             <input type="hidden" id="last_journal_id" value="<%= @journals.last.try(:id).to_i %>">
+            <input type="hidden" id="recent_journal_id" value="<%= @journals.last.try(:id).to_i %>">
             <label style="color: red;"><b>Your Message to us:</b></label>
-            <%= text_area_tag 'notes', '', rows: 10, style: 'border: 2px solid' %>
+            <%= text_area_tag 'notes', '', rows: 10, style: 'border: 2px solid', placeholder: 'Please reply here' %>
         </p>
         <p><input style="width: auto;" type="submit" id="submit_button" class="btn btn-block create-account" value="Submit" onclick="document.getElementById('email').value = ''">
         <a href="<%= helpdesk_close_path(params[:enckey]) %>" onclick="confirm('are you sure want to close this ticket?')" style="background: red;" class="btn btn-block create-account">Problem Solved</a>
@@ -134,14 +135,15 @@ xxx@abc.com,yyy@abc.com,zzz@abc.com)" style="width: 75%;padding: 10px;border: 2p
     </div>
     <% end %>
 </div>
+<audio style="display: none;" id="ding" src="/assets/audio/ding-101492.mp3"></audio>
 <% end %>
 <% unless @issue.closed? %>
 <script>
-        setInterval(function() {
-          Rails.ajax({
-            url: "<%= helpdesk_refresh_path(params[:enckey]) %>?last_journal_id="+ document.getElementById('last_journal_id').value,
-            type: "GET"
-          });
-        }, 10000);
+    setInterval(function() {
+      Rails.ajax({
+        url: "<%= helpdesk_refresh_path(params[:enckey]) %>?last_journal_id="+ document.getElementById('last_journal_id').value+ "&recent_journal_id="+ document.getElementById('recent_journal_id').value,
+        type: "GET"
+      });
+    }, 10000);
 </script>
 <% end %>
