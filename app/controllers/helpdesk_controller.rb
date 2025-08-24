@@ -112,6 +112,11 @@ class HelpdeskController < ApplicationController
 			flash[:notice] = "Successfully updated"
 		end
 		@issue = @ic.issue
+		if params[:msg].present?
+			journal = @issue.init_journal(User.current, params[:msg])
+			journal.ic_id = @ic.id
+			journal.save
+		end
 		notes = "Ticket closed by customer"
 	    journal = @issue.init_journal(User.current, notes)
 		journal.ic_id = @ic.id

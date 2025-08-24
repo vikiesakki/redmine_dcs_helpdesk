@@ -129,7 +129,7 @@ xxx@abc.com,yyy@abc.com,zzz@abc.com)" style="width: 75%;padding: 10px;border: 2p
             <%= text_area_tag 'notes', '', rows: 10, style: 'border: 2px solid', placeholder: 'Please reply here' %>
         </p>
         <p><input style="width: auto;" type="submit" id="submit_button" class="btn btn-block create-account" value="Submit" onclick="document.getElementById('email').value = ''">
-        <a href="<%= helpdesk_close_path(params[:enckey]) %>" onclick="confirm('are you sure want to close this ticket?')" style="background: red;" class="btn btn-block create-account">Problem Solved</a>
+        <a id="close-ticket" data-base-url="<%= helpdesk_close_path(params[:enckey]) %>" href="#" style="background: red;" class="btn btn-block create-account">Problem Solved</a>
         </p>
     </div>
     <% end %>
@@ -138,6 +138,18 @@ xxx@abc.com,yyy@abc.com,zzz@abc.com)" style="width: 75%;padding: 10px;border: 2p
 <% end %>
 <% unless @issue.closed? %>
 <script>
+
+    document.getElementById('close-ticket').addEventListener('click', function (e) {
+      e.preventDefault();
+
+      if (confirm('Are you sure you want to close this ticket?')) {
+        const lastId = document.getElementById('notes').value;
+        const baseUrl = this.dataset.baseUrl;
+        const finalUrl = `${baseUrl}?msg=${encodeURIComponent(lastId)}`;
+        window.location.href = finalUrl;
+      }
+    });
+
     setInterval(function() {
       Rails.ajax({
         url: "<%= helpdesk_refresh_path(params[:enckey]) %>?last_journal_id="+ document.getElementById('last_journal_id').value+ "&recent_journal_id="+ document.getElementById('recent_journal_id').value,
