@@ -113,16 +113,18 @@ class HelpdeskController < ApplicationController
 		end
 		@issue = @ic.issue
 		if params[:msg].present?
-			journal = @issue.init_journal(User.current, params[:msg])
-			journal.ic_id = @ic.id
-			journal.save
+			Journal.create(journalized_id: @issue.id,                                        
+ 						   journalized_type: "Issue",                                    
+ 						   user_id: User.current.id,
+ 						   ic_id: @ic.id,                                              
+ 						   notes: params[:msg])
 		end
 		notes = "Ticket closed by customer"
-	    journal = @issue.init_journal(User.current, notes)
-		journal.ic_id = @ic.id
-		journal.save
 		closed_status = IssueStatus.where(is_closed: true).first
 		@issue.update(status_id: closed_status.id)
+		j = @issue.init_journal(User.current, notes)
+		j.ic_id = @ic.id
+		j.save
 		ics = IssueCustomer.where(issue_id: @issue.id)
 		ics.each do |ic|
 			CustomerMailer.deliver_helpdesk_closed(@issue, ic).deliver_now
