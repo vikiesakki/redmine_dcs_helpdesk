@@ -13,13 +13,17 @@
         <% end %>
       >
         <span class="journal-info">
-          <%=
-            # if journal.ic_id.present?
-              journal.ic_id.present? ? (IssueCustomer.find(journal.ic_id).name.present? ? IssueCustomer.find(journal.ic_id).name : IssueCustomer.find(journal.ic_id).customer_email) : avatar(journal.user)
-          %>
-          <%= authoring journal.created_on, journal.user, :label => :label_updated_time_by %>
-          <%= render_private_notes_indicator(journal) %>
-          <%= render_journal_update_info(journal) %>
+          <% if journal.ic_id.present? %>
+              Updated by <b style="color: blue;"><%= journal.ic_id.present? ? (IssueCustomer.find(journal.ic_id).name.present? ? IssueCustomer.find(journal.ic_id).name : IssueCustomer.find(journal.ic_id).customer_email) : journal.user.name %> <span class="local-time">
+                <%= journal.created_on.in_time_zone("Singapore").strftime("%d-%m-%Y %H:%M:%S") %>
+              </span></b>
+            </span>
+          <% else %>
+            avatar(journal.user)
+            <%= authoring journal.created_on, journal.user, :label => :label_updated_time_by %>
+            <%= render_private_notes_indicator(journal) %>
+            <%= render_journal_update_info(journal) %>
+          <% end %>
         </span>
         <span class="journal-meta">
           <span class="journal-actions">
