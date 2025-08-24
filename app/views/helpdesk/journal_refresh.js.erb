@@ -1,5 +1,12 @@
+<% if @last_id.present? %>
 $("#tab-content-history").html(`<%= render partial: 'issues/tabs/history', :locals => {:tab => {locals: {issue: @issue, :journals => Journal.where(journalized_type: "Issue", journalized_id: @issue.id).where("notes IS NOT NULL")} } } %>`);
 $("#recent_journal_id").val(<%= @issue.journals.last.try(:id) %>)
 <% if @recent_id && @recent_id.to_i < @issue.journals.last.try(:id) %>
 	document.getElementById('ding').play();
+<% end %>
+<% else %>
+	<% if @issue.journals.present? %>
+		window.location.replace(window.location.href);
+		location.reload();
+	<% end %>
 <% end %>

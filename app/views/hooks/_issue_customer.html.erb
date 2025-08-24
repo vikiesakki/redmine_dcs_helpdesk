@@ -46,7 +46,7 @@ xxx@abc.com,yyy@abc.com,zzz@abc.com)", style: 'width: 40%' %>
 		<input type="submit" id="submit_button" class="btn btn-block create-account" value="Submit">
 	<% end %>
 </div>
-<% if ics.present? %>
+<% if ics.present? && !@issue.closed? %>
 <audio style="display: none;" id="ding" src="/assets/audio/ding-101492.mp3"></audio>
 <script>
 	$(document).ready(function(){
@@ -58,6 +58,20 @@ xxx@abc.com,yyy@abc.com,zzz@abc.com)", style: 'width: 40%' %>
 	      });
 	      $('.has-details').hide();
     	}
+    }, 10000);
+	});
+</script>
+<% end %>
+
+<% if ics.present? && !@issue.closed? && @issue.journals.blank? %>
+<audio style="display: none;" id="ding" src="/assets/audio/ding-101492.mp3"></audio>
+<script>
+	$(document).ready(function(){
+		setInterval(function() {
+	      Rails.ajax({
+	        url: "<%= journal_refresh_path(@issue) %>",
+	        type: "GET"
+	      });
     }, 10000);
 	});
 </script>
