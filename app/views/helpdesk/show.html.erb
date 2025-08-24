@@ -21,7 +21,7 @@
     <div class="header">
         <img style="float: left;width: 100px;" src="https://www.dcsnetworks.sg/uploads/7/9/4/7/79473268/6711601.jpg" alt="DCS Networks Logo" class="logo">
         <h2 style="text-align: center;font-size: x-large;">DCS Networks Pte Ltd - Chat Ticketing Tracking Systems</h2>
-        <p style="text-align: center;">Ticket Number : <span  style="color: red;" class="ticket-number">#<%= @issue.id %></span></p>
+        <p style="text-align: center;"><b>Ticket Number : <span  style="color: red;" class="ticket-number">#<%= @issue.id %></span></b></p>
     </div>
     <!--<div class="form-icon" style="background: none;">
         <img src="https://www.dcsnetworks.sg/uploads/7/9/4/7/79473268/6711601.jpg" />
@@ -59,7 +59,6 @@
             <label>Description:</label> <span><b><%= @issue.description %></b></span>
         </p>
     </div>
-    last_journal_id
     <div class="form-group">
         <p>
             <label>Could you share your name with me?:</label> <span><b>

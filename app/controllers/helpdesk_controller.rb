@@ -138,14 +138,14 @@ class HelpdeskController < ApplicationController
 		@issue = @ic.issue
 		emails = params[:email].split(',')
 		customer_name = params[:customer_name]
-		ic = IssueCustomer.where(issue_id: issue_id, customer_email: email).update(name: customer_name)
+		ic = IssueCustomer.where(customer_email: email).update(name: customer_name)
 		if params[:email].present?
 			emails.each do |em|
 				oic = IssueCustomer.where(customer_email: em).first
-				if IssueCustomer.where(issue_id: params[:issue_id], customer_email: em).blank?
+				if IssueCustomer.where(issue_id: issue_id, customer_email: em).blank?
 					_h = {}
 					_h[:added_str] = User.current.name
-					_h[:issue_id] = params[:issue_id]
+					_h[:issue_id] = issue_id
 					_h[:customer_email] = em
 					if oic.present?
 						_h[:name] = oic.name
