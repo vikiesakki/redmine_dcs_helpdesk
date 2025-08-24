@@ -6,6 +6,7 @@ $("#recent_journal_id").val(<%= @issue.journals.last.try(:id) %>)
 <% end %>
 <% else %>
 	<% if @issue.journals.present? %>
+		document.getElementById('ding').play();
 		window.location.replace(window.location.href);
 		location.reload();
 	<% end %>
