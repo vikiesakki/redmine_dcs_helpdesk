@@ -1,6 +1,6 @@
 class CustomerMailer < ActionMailer::Base
   
-  layout 'mailer'
+  layout 'customer_mailer'
   helper :application
   helper :issues
   helper :custom_fields

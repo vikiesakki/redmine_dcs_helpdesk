@@ -106,12 +106,13 @@ class HelpdeskController < ApplicationController
 		deckey = IssueCustomer.decrypt_url(params[:enckey])
 		email, issue_id = deckey.split('-')
 		@ic = IssueCustomer.where(issue_id: issue_id, customer_email: email).first
-		if @ic.blank?
+		@issue = @ic.issue
+		if @ic.blank? || @issue.blank?
 			flash[:error] = "Invalid request"
 		else
 			flash[:notice] = "Successfully updated"
 		end
-		@issue = @ic.issue
+		
 		if params[:msg].present?
 			Journal.create(journalized_id: @issue.id,                                        
  						   journalized_type: "Issue",                                    

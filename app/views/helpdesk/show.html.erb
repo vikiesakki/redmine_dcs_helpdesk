@@ -115,11 +115,11 @@ xxx@abc.com,yyy@abc.com,zzz@abc.com)" style="width: 75%;padding: 10px;border: 2p
     <div class="form-group" id="attachments_link">
         <p><%= render :partial => 'attachments/customer_links', :locals => {:attachments => @issue.attachments, container: @issue } %></p>
     </div>
+    <% unless @issue.closed? %>
     <div class="form-group" id="new-attachments" style="display:inline-block;">
         <label><b>Attachments</b></label>
         <p><%= render :partial => 'attachments/customer_attachment', :locals => {:container => @issue } %></p>
     </div>
-    <% unless @issue.closed? %>
     <div class="form-group">
         <hr />
         <p>

@@ -14,7 +14,9 @@ module CustIssuePatch
     def send_all_to_customer
       return unless status_changed?
       return unless closed?
+      return if id.blank?
       ics = IssueCustomer.where(issue_id: id)
+      return if ics.blank?
       ics.each do |ic|
         CustomerMailer.deliver_helpdesk_closed(self, ic).deliver_now
       end
