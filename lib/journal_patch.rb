@@ -19,10 +19,12 @@ module JournalPatch
         ics.each do |ic|
           CustomerMailer.deliver_helpdesk_notes_added(journalized, self, ic).deliver_now
         end
+        ces = ChatEmail.where(issue_id: journalized_id)
+        ces.each do |ce|
+          CustomerMailer.send_emailchat_notes_added(journalized, self, ce).deliver_now
+        end
       end
     end
-
-
 
   end
 end

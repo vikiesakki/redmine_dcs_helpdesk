@@ -1,0 +1,18 @@
+<p><b>Hello <%= @customer.name %>,</b></p>
+<br />
+<p>Thank you for reaching out! We’ve received your request and a support ticket has
+been created. Our team will look into it and get back to you as soon as possible</p>
+<p><b>Your Request :</b></p>
+<p><%= @issue.description %></p>
+<p><b>Your ticket number is: #<%= @issue.id %></b></p>
+<p>Please use this number for any future communication regarding this issue.</p>
+<br />
+<p><b>What happens next? :</b></p>
+<p>A member of our team will review your request and respond shortly. Our standard
+response time is within 9am to 6pm from Monday to Friday, 9am to 1pm on Saturday
+during Singapore working hour</p>
+<p>You will receive an email notification when our staff replies to your ticket</p>
+<p>Kind regards,</p>
+<p><%= @user.name %> of Helpdesk Team</p>
+<p>DCS Networks Pte Ltd</p>
+<p>Helpdesk (65) 65001212</p>

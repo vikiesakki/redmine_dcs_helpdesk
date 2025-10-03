@@ -13,12 +13,46 @@ class CustomerMailer < ActionMailer::Base
   	send_helpdesk_notification(issue_customer)
 	end
 
+  def self.deliver_emailchat_notification(issue_chat, user)
+    send_emailchat_notification(issue_chat, user)
+  end
+
   def self.deliver_helpdesk_closed(issue, customer)
     send_helpdesk_closed(issue, customer)
   end
 
   def self.deliver_helpdesk_notes_added(issue, journal, customer)
     send_helpdesk_notes_added(issue, journal, customer)
+  end
+
+  def self.deliver_emailchat_notes_added(issue, journal, customer)
+    send_emailchat_notes_added(issue, journal, customer)
+  end
+
+  def send_emailchat_notes_added(issue, journal, customer)
+    @customer = customer
+    @issue = issue
+    @journal = journal
+    @to = [customer.customer_email]
+    # @url = url_for(:controller => 'helpdesk', :action => 'show', :enckey => @customer.encrypt_for_url)
+    subj = "DCS Networks Helpdesk – Email Ticketing Tracking #[#{@issue.id}] notes added"
+    mail :to => @to,
+      :subject => subj
+  end
+
+  def send_emailchat_notification(issue_chat, user)
+    @issue = issue_chat.issue
+    redmine_headers 'Project' => @issue.project.identifier,
+                    'Issue-Tracker' => @issue.tracker.name,
+                    'Issue-Id' => @issue.id,
+                    'Issue-Author' => @issue.author.login
+    redmine_headers 'Issue-Priority' => @issue.priority.name if @issue.priority
+    @customer = issue_chat
+    @user = user
+    # @url = url_for(:controller => 'helpdesk', :action => 'show', :enckey => @customer.encrypt_for_url)
+    subj = "Subject: Thank you for your request! Your ticket number is #[#{@issue.id}]"
+    mail :to => [issue_chat.customer_email],
+      :subject => subj
   end
 
   def send_helpdesk_notes_added(issue, journal, customer)

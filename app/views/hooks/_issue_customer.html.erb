@@ -76,3 +76,45 @@ xxx@abc.com,yyy@abc.com,zzz@abc.com)", style: 'width: 40%' %>
 	});
 </script>
 <% end %>
+
+<hr />
+<p>
+  <strong>Invite customer for Email Chatting:</strong>
+</p>
+<div>
+	<input type="hidden" id="last_journal_id" value="<%= @issue.journals.last.try(:id) %>" />
+	<input type="hidden" id="recent_journal_id" value="<%= @issue.journals.last.try(:id) %>" />
+	<%= form_tag helpdesk_email_update_path(@issue) do |f| %>
+		<!--<div class="label"><span></span>:</div> -->
+		<%= text_field_tag :customer, nil, placeholder: "customer email (format as this
+xxx@abc.com)", style: 'width: 20%' %>
+<%= text_field_tag :name, nil, placeholder: "customer name", style: 'width: 20%' %>
+		<input type="submit" id="submit_button" class="btn btn-block create-account" value="Submit">
+	<% end %>
+</div>
+<% ics = ChatEmail.where(issue_id: @issue.id) %>
+<% if ics.present? %>
+<table class="list issues odd-even sort-by-id sort-desc">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Email</th>
+			<th>Added by</th>
+			<th>Action</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% ics.each do |ic| %>
+			<tr>
+				<td><%= ic.name %></td>
+				<td><%= ic.customer_email %></td>
+				<td><%= ic.added_str %></td>
+				<td>
+					<%= link_to 'delete', helpdesk_destroy_path(@issue,ic), method: 'delete', "data-confirm"=>"Are you sure?", class: 'icon-only icon-del' %>
+						
+					</td>
+			</tr>
+		<% end %>
+	</tbody>
+</table>
+<% end %>

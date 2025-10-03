@@ -1,13 +1,37 @@
 class HelpdeskController < ApplicationController
 	layout 'customer'
 	skip_before_action :verify_authenticity_token, only: [:upload, :remove]
-	skip_before_action :session_expiration, :user_setup, :check_if_login_required, :check_password_change, :check_twofa_activation, except: [:journal_refresh, :update, :destroy]
+	skip_before_action :session_expiration, :user_setup, :check_if_login_required, :check_password_change, :check_twofa_activation, except: [:journal_refresh, :email_update, :update, :destroy]
 	
 	helper :attachments
 	helper :issues
 	helper :journals
 	helper :custom_fields
   	helper :issue_relations
+
+  	def email_update
+  		emails = [params[:customer]]
+		emails.each do |em|
+			oic = ChatEmail.where(customer_email: em).first
+			if ChatEmail.where(issue_id: params[:issue_id], customer_email: em).blank?
+				_h = {}
+				_h[:added_str] = User.current.name
+				_h[:issue_id] = params[:issue_id]
+				_h[:customer_email] = em
+				if oic.present?
+					_h[:name] = oic.name
+				else
+					_h[:name] = params[:name]
+				end
+				ChatEmail.create(_h)
+			end
+			ic = ChatEmail.where(issue_id: params[:issue_id], customer_email: em).first
+			CustomerMailer.deliver_emailchat_notification(ic, User.current).deliver_now
+		end
+		issue = Issue.find params[:issue_id]
+		flash[:notice] = "Successfully created the customer email chat"
+		redirect_to issue_path(issue)
+  	end
 
 	def update
 		emails = params[:customer].split(',')
