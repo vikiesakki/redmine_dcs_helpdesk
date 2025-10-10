@@ -37,7 +37,7 @@ class CustomerMailer < ActionMailer::Base
     # @url = url_for(:controller => 'helpdesk', :action => 'show', :enckey => @customer.encrypt_for_url)
     subj = "DCS Networks Helpdesk – Email Ticketing Tracking #[#{@issue.id}] notes added"
     mail :to => @to,
-      :subject => subj
+      :subject => subj, reply_to: 'support@dcsnpl.sg'
   end
 
   def send_emailchat_notification(issue_chat, user)
@@ -51,7 +51,7 @@ class CustomerMailer < ActionMailer::Base
     @user = user
     # @url = url_for(:controller => 'helpdesk', :action => 'show', :enckey => @customer.encrypt_for_url)
     subj = "Subject: Thank you for your request! Your ticket number is #[#{@issue.id}]"
-    mail :to => [issue_chat.customer_email],
+    mail :to => [issue_chat.customer_email], reply_to: 'support@dcsnpl.sg'
       :subject => subj
   end
 
