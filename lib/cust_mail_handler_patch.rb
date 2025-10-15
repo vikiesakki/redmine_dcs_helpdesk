@@ -44,7 +44,7 @@ module CustMailHandlerPatch
           CustomerMailer.deliver_emailchat_notification(ic, new_issue.author).deliver_now
           issue = new_issue
         end
-      rescue e
+      rescue => e
         Rails.logger.info "Error in creation of issue #{e}"
       end
 
