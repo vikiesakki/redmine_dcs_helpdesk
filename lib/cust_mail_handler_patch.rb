@@ -30,7 +30,7 @@ module CustMailHandlerPatch
         return
       end
       if issue.closed?
-        new_issue = issue.clone
+        new_issue = issue.dup
         new_issue.save
         oic = ChatEmail.where(customer_email: sender_email).first
         _h = {}
