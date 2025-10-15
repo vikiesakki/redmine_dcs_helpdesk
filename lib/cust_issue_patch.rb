@@ -16,9 +16,13 @@ module CustIssuePatch
       return unless closed?
       return if id.blank?
       ics = IssueCustomer.where(issue_id: id)
-      return if ics.blank?
+      ces = ChatEmail.where(issue_id: id)
+      return if ics.blank? && ces.blank?
       ics.each do |ic|
         CustomerMailer.deliver_helpdesk_closed(self, ic).deliver_now
+      end
+      ces.each do |ce|
+        CustomerMailer.deliver_emailchat_closed(self, ce).deliver_now
       end
     end
 

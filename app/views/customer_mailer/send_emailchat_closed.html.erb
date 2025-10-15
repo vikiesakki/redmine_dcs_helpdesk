@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DCS Networks Helpdesk</title>
+    <style>
+        body{
+            background-color: #dee9ff;
+        }
+
+        .registration-form{
+            padding: 50px 0;
+        }
+
+        .registration-form form{
+            background-color: #fff;
+            max-width: 1000px;
+            margin: auto;
+            padding: 50px 70px;
+            border-top-left-radius: 30px;
+            border-top-right-radius: 30px;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.075);
+        }
+        .attachments_fields>span, #existing-attachments>span {
+            display: block;
+            white-space: nowrap;
+        }
+        .registration-form .form-icon{
+            text-align: center;
+            background-color: #5891ff;
+            border-radius: 50%;
+            font-size: 40px;
+            color: white;
+            width: 100px;
+            height: 100px;
+            margin: auto;
+            margin-bottom: 50px;
+            line-height: 100px;
+        }
+        .description{
+            display: none !important;
+        }
+        #errorExplanation, div.flash, .nodata, .warning, .conflict {
+            padding: 6px 4px 6px 30px;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+            border: 1px solid;
+            border-radius: 3px;
+        }
+        div.flash.error, #errorExplanation {
+            background-color: #ffe3e3;
+            border-color: #d88;
+            color: #880000;
+        }
+        #errorExplanation:has(svg) {
+            position: relative;
+        }
+        div.flash.notice {
+            background-color: #dfffdf;
+            border-color: #9fcf9f;
+            color: #005f00;
+        }
+
+        .registration-form .item{
+            border-radius: 20px;
+            margin-bottom: 25px;
+            padding: 10px 20px;
+        }
+
+        .registration-form .create-account{
+            border-radius: 30px;
+            padding: 10px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            background-color: #5791ff;
+            border: none;
+            color: white;
+            margin-top: 20px;
+        }
+
+        .registration-form .social-media{
+            max-width: 600px;
+            background-color: #fff;
+            margin: auto;
+            padding: 35px 0;
+            text-align: center;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            color: #9fadca;
+            border-top: 1px solid #dee9ff;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.075);
+        }
+
+        .registration-form .social-icons{
+            margin-top: 30px;
+            margin-bottom: 16px;
+        }
+
+        .registration-form .social-icons a{
+            font-size: 23px;
+            margin: 0 3px;
+            color: #5691ff;
+            border: 1px solid;
+            border-radius: 50%;
+            width: 45px;
+            display: inline-block;
+            height: 45px;
+            text-align: center;
+            background-color: #fff;
+            line-height: 45px;
+        }
+
+        .registration-form .social-icons a:hover{
+            text-decoration: none;
+            opacity: 0.6;
+        }
+        .registration-form select, textarea {
+            border-radius: 20px;
+            margin-bottom: 25px;
+            padding: 10px 20px;
+            display: block;
+            width: 100%;
+            padding: .375rem .75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ced4da;
+            border-radius: .25rem;
+            transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+        }
+        span.required {
+           color: red;
+        }
+
+        .icon-del {
+          position: relative;
+          width: 20px;
+          height: 20px;
+          cursor: pointer;
+        }
+
+        .icon-del::before,
+        .icon-del::after {
+          content: "";
+          position: absolute;
+          left: 9px;
+          top: 0;
+          width: 2px;
+          height: 20px;
+          background-color: red;
+          transition: background-color 0.3s;
+        }
+        .journals h4.journal-header {
+        background-color: #c9e1f9;
+        border-bottom: 0;
+        padding: 8px;
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+        }
+        svg.s18 {
+        width: 1.125rem;
+        height: 1.125rem;
+        }
+        .journals .journal-meta, .journals .journal-actions {
+          display: inline-flex;
+          gap: 10px;
+        }
+        h4 {
+        font-size: 0.875rem;
+        border-bottom: 1px solid #ccc;
+        font-weight: normal;
+        }
+
+        .icon-del::before {
+          transform: rotate(45deg);
+        }
+
+        .icon-del::after {
+          transform: rotate(-45deg);
+        }
+
+        .icon-del:hover::before,
+        .icon-del:hover::after {
+          background-color: darkred;
+        }
+
+        .icon-del:not(:has(svg)) { background-image: url(/delete.png); }
+        @media (max-width: 576px) {
+            .registration-form form{
+                padding: 50px 20px;
+            }
+
+            .registration-form .form-icon{
+                width: 70px;
+                height: 70px;
+                font-size: 30px;
+                line-height: 70px;
+            }
+        }
+        body {
+      font-family: Arial, sans-serif;
+      background: #e6f0ff;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      background: #fff;
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0px 2px 6px rgba(0,0,0,0.2);
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .header img {
+      max-height: 60px;
+    }
+    .success-box {
+      background: #d4edda;
+      border: 1px solid #c3e6cb;
+      color: #155724;
+      padding: 10px;
+      border-radius: 5px;
+      margin: 15px 0;
+    }
+    h2 {
+      text-align: center;
+      margin: 15px 0;
+      font-size: 20px;
+    }
+    .ticket-info {
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    .log-entry {
+      background: #f2f2f2;
+      margin: 8px 0;
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+    .log-entry strong {
+      color: #0073e6;
+    }
+    .attachment {
+      margin-top: 20px;
+    }
+    input[type="file"] {
+      margin-top: 10px;
+    }
+    </style>
+</head>
+<body>
+<div class="registration-form container ticket-info">
+    <div class="form-icon header" style="background: none;">
+        <img src="https://www.dcsnetworks.sg/uploads/7/9/4/7/79473268/6711601.jpg" />
+    </div>
+    <h3>DCS Networks Pte Ltd : Email Chat Ticketing Tracking</h3>
+    <br />
+    <br />
+    <div class="ticket-info">
+      <p><label>Ticket Number:</label> <span>#<%= @issue.id %></span></p>
+      <p><label>Subject:</label> <span><%= @issue.subject %></span></p>
+      <p><label>Description:</label> <span><%= @issue.description %></span></p>
+    </div>
+    <div id="journal_block">
+    <% @issue.journals.each do |j| %>
+    <% next if j.notes.blank? %>
+    <div class="log-entry journals">
+        <div id="change-<%= j.id %>" class="journal has-notes" data-controller="quote-reply">
+        <div id="note-1" class="note">
+          <h4 class="journal-header">
+            <span class="journal-info">
+              Updated by <b style="color: blue;"><%=
+              j.chat_id.present? ? (ChatEmail.find(j.chat_id).try(:name).present? ? ChatEmail.find(j.chat_id).try(:name) : ChatEmail.find(j.chat_id).try(:customer_email)) : j.user.try(:name)
+          %> <span class="local-time" data-time="<%= j.created_on.utc.iso8601 %>">
+  <%= j.created_on.utc.strftime("%Y-%m-%d %H:%M:%S UTC") %>
+</span></b>
+              <span id="journal-9212-private_notes" class=""></span>
+            </span>
+          </h4>
+          <div class="journal-content">
+            <div id="journal-9212-notes" class="wiki journal-note" data-quote-reply-target="content"><p><%= textilizable(j, :notes) %></p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% end %>
+    </div>
+    <% if @issue.attachments.size > 0 %>
+    <hr />
+    <div class="attachment" id="attachments_link">
+        <label><b>Attachments</b></label>
+        <p><%= render :partial => 'attachments/customer_links', :locals => {:attachments => @issue.attachments, container: @issue } %></p>
+    </div>
+    <% end %>
+</div>
+</body>

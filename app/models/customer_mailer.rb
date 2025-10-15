@@ -29,6 +29,20 @@ class CustomerMailer < ActionMailer::Base
     send_emailchat_notes_added(issue, journal, customer)
   end
 
+  def self.deliver_emailchat_closed(issue, customer)
+    send_emailchat_closed(issue, customer)
+  end
+
+  def send_emailchat_closed(issue, customer)
+    @issue = issue
+    @customer = customer
+    @to = [customer.customer_email]
+    @url = url_for(:controller => 'helpdesk', :action => 'show', :enckey => @customer.encrypt_for_url)
+    subj = "DCS Networks Helpdesk – Chat Ticketing Tracking #[#{@issue.id}] Ticket closed"
+    mail :to => @to,
+      :subject => subj
+  end
+
   def send_emailchat_notes_added(issue, journal, customer)
     @customer = customer
     @issue = issue
