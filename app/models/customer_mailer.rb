@@ -37,7 +37,7 @@ class CustomerMailer < ActionMailer::Base
     @issue = issue
     @customer = customer
     @to = [customer.customer_email]
-    @url = url_for(:controller => 'helpdesk', :action => 'show', :enckey => @customer.encrypt_for_url)
+    # @url = url_for(:controller => 'helpdesk', :action => 'show', :enckey => @customer.encrypt_for_url)
     subj = "DCS Networks Helpdesk – Chat Ticketing Tracking #[#{@issue.id}] Ticket closed"
     mail :to => @to,
       :subject => subj
