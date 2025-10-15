@@ -29,19 +29,23 @@ module CustMailHandlerPatch
         receive_issue_reply_without_cust_patch(issue_id, from_journal)
         return
       end
-      if issue.closed?
-        new_issue = issue.dup
-        new_issue.save
-        oic = ChatEmail.where(customer_email: sender_email).first
-        _h = {}
-        _h[:added_str] = new_issue.author.name
-        _h[:issue_id] = new_issue.id
-        _h[:customer_email] = new_issue
-        _h[:name] = oic.name
-        ChatEmail.create(_h)
-        ic = ChatEmail.where(issue_id: new_issue.id, customer_email: sender_email).first
-        CustomerMailer.deliver_emailchat_notification(ic, new_issue.author).deliver_now
-        issue = new_issue
+      begin
+        if issue.closed?
+          new_issue = issue.dup
+          new_issue.save
+          oic = ChatEmail.where(customer_email: sender_email).first
+          _h = {}
+          _h[:added_str] = new_issue.author.name
+          _h[:issue_id] = new_issue.id
+          _h[:customer_email] = sender_email
+          _h[:name] = oic.name
+          ChatEmail.create(_h)
+          ic = ChatEmail.where(issue_id: new_issue.id, customer_email: sender_email).first
+          CustomerMailer.deliver_emailchat_notification(ic, new_issue.author).deliver_now
+          issue = new_issue
+        end
+      rescue e
+        Rails.logger.info "Error in creation of issue #{e}"
       end
 
       # Never receive emails to projects where adding issue notes is not possible
