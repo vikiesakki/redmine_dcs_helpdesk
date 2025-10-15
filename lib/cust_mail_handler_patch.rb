@@ -32,7 +32,9 @@ module CustMailHandlerPatch
       begin
         if issue.closed?
           new_issue = issue.dup
-          new_issue.save
+          Rails.logger.info "Before creation of issue"
+          new_issue.save(validate: false)
+          Rails.logger.info "After creation of issue ##{new_issue.id}"
           oic = ChatEmail.where(customer_email: sender_email).first
           _h = {}
           _h[:added_str] = new_issue.author.name
