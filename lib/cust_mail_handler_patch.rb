@@ -43,6 +43,9 @@ module CustMailHandlerPatch
       issue.safe_attributes = issue_attributes_from_keywords(issue)
       issue.safe_attributes = {'custom_field_values' => custom_field_values_from_keywords(issue)}
       text_notes = cleaned_up_text_body.split("\r\n\r\nOn")
+      if text_notes.size == 1
+        text_notes = cleaned_up_text_body.split("\r\n\r\nFrom: DCS")
+      end
       journal.notes = text_notes.first
       journal.chat_id = ch.first.id
       # add To and Cc as watchers before saving so the watchers can reply to Redmine

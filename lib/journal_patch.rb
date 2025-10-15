@@ -13,8 +13,9 @@ module JournalPatch
   module InstanceMethods
     def send_email_to_customer
       return unless journalized_type == 'Issue'
-      return if IssueCustomer.where(issue_id: journalized_id).blank?
-      if notes.present? && user.is_a?(User)
+      return if user.is_a?(AnonymousUser)
+      return if IssueCustomer.where(issue_id: journalized_id).blank?  && ChatEmail.where(issue_id: journalized_id).blank?
+      if notes.present?
         ics = IssueCustomer.where(issue_id: journalized_id)
         ics.each do |ic|
           CustomerMailer.deliver_helpdesk_notes_added(journalized, self, ic).deliver_now
