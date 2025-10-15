@@ -18,6 +18,11 @@
                 <%= journal.created_on.in_time_zone("Singapore").strftime("%d-%m-%Y %H:%M:%S") %>
               </span></b>
             </span>
+          <% elsif journal.chat_id.present? %>
+              Updated by <b style="color: blue;"><%= journal.chat_id.present? ? (ChatEmail.find(journal.chat_id).name.present? ? ChatEmail.find(journal.chat_id).name : ChatEmail.find(journal.chat_id).customer_email) : journal.user.name %> <span class="local-time">
+                <%= journal.created_on.in_time_zone("Singapore").strftime("%d-%m-%Y %H:%M:%S") %>
+              </span></b>
+            </span>
           <% else %>
             <%= avatar(journal.user) %>
             <%= authoring journal.created_on, journal.user, :label => :label_updated_time_by %>
