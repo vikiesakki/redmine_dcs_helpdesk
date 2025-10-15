@@ -21,7 +21,7 @@ module JournalPatch
         end
         ces = ChatEmail.where(issue_id: journalized_id)
         ces.each do |ce|
-          CustomerMailer.send_emailchat_notes_added(journalized, self, ce).deliver_now
+          CustomerMailer.deliver_emailchat_notes_added(journalized, self, ce).deliver_now
         end
       end
     end
