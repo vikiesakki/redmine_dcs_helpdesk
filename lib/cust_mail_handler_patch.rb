@@ -61,35 +61,9 @@ module CustMailHandlerPatch
       puts "ticket id #{ticketid}"
       if ticketid > 0
         receive_issue_reply(ticketid)
-      elsif headers.detect {|h| h.to_s =~ MESSAGE_ID_RE}
-        klass, object_id = $1, $2.to_i
-        method_name = "receive_#{klass}_reply"
-        if self.class.private_instance_methods.collect(&:to_s).include?(method_name)
-          send method_name, object_id
-        else
-          puts "Ignoring it"
-          # ignoring it
-        end
-      elsif m = subject.match(ISSUE_REPLY_SUBJECT_RE)
-        receive_issue_reply(m[1].to_i)
-      elsif m = subject.match(MESSAGE_REPLY_SUBJECT_RE)
-        receive_message_reply(m[1].to_i)
       else
-        dispatch_to_default
+        dispatch_without_cust_patch
       end
-    rescue ActiveRecord::RecordInvalid => e
-      # TODO: send a email to the user
-      logger&.error "MailHandler: #{e.message}"
-      false
-    rescue MissingInformation => e
-      logger&.error "MailHandler: missing information from #{user}: #{e.message}"
-      false
-    rescue MissingContainer => e
-      logger&.error "MailHandler: reply to nonexistant object from #{user}: #{e.message}"
-      false
-    rescue UnauthorizedAction => e
-      logger&.error "MailHandler: unauthorized attempt from #{user}: #{e.message}"
-      false
     end
 
 
