@@ -36,16 +36,16 @@ module CustMailHandlerPatch
             new_issue = issue.dup
             new_issue.reopen_id = issue.id
             new_issue.save(validate: false)
+            oic = ChatEmail.where(customer_email: sender_email).first
+            _h = {}
+            _h[:added_str] = new_issue.author.name
+            _h[:issue_id] = new_issue.id
+            _h[:customer_email] = sender_email
+            _h[:name] = oic.name
+            ChatEmail.create(_h)
+            ic = ChatEmail.where(issue_id: new_issue.id, customer_email: sender_email).first
+            CustomerMailer.deliver_emailchat_notification(ic, new_issue.author).deliver_now
           end
-          oic = ChatEmail.where(customer_email: sender_email).first
-          _h = {}
-          _h[:added_str] = new_issue.author.name
-          _h[:issue_id] = new_issue.id
-          _h[:customer_email] = sender_email
-          _h[:name] = oic.name
-          ChatEmail.create(_h)
-          ic = ChatEmail.where(issue_id: new_issue.id, customer_email: sender_email).first
-          CustomerMailer.deliver_emailchat_notification(ic, new_issue.author).deliver_now
           journal = new_issue.init_journal(user)
           text_notes = cleaned_up_text_body.split("\r\n\r\nOn")
           if text_notes.size == 1
