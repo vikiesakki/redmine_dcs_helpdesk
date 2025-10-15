@@ -61,6 +61,9 @@ module CustMailHandlerPatch
       if text_notes.size == 1
         text_notes = cleaned_up_text_body.split("\r\n\r\nFrom: DCS")
       end
+      if text_notes.size == 1
+        text_notes = cleaned_up_text_body.split("\n\nOn")
+      end
       journal.notes = text_notes.first
       journal.chat_id = ch.first.id
       # add To and Cc as watchers before saving so the watchers can reply to Redmine
