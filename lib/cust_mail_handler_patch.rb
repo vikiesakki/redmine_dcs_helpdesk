@@ -24,7 +24,7 @@ module CustMailHandlerPatch
         raise MissingContainer, "reply to nonexistant issue [##{issue_id}]"
       end
       sender_email = email.from.to_a.first.to_s.strip
-      ch = ChatEmail.where(issue_id: issue.id, email: sender_email)
+      ch = ChatEmail.where(issue_id: issue.id, customer_email: sender_email)
       if ch.blank?
         receive_issue_reply_without_cust_patch(issue_id, from_journal)
         return
