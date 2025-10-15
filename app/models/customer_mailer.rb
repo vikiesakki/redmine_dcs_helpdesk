@@ -48,6 +48,11 @@ class CustomerMailer < ActionMailer::Base
     @issue = issue
     @journal = journal
     @to = [customer.customer_email]
+    redmine_headers 'Project' => @issue.project.identifier,
+                    'Issue-Tracker' => @issue.tracker.name,
+                    'Issue-Id' => @issue.id,
+                    'Issue-Author' => @issue.author.login
+    redmine_headers 'Issue-Priority' => @issue.priority.name if @issue.priority
     # @url = url_for(:controller => 'helpdesk', :action => 'show', :enckey => @customer.encrypt_for_url)
     subj = "DCS Networks Helpdesk – Email Ticketing Tracking #[#{@issue.id}] notes added"
     mail :to => @to,
