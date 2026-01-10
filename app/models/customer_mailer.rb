@@ -21,6 +21,10 @@ class CustomerMailer < ActionMailer::Base
     send_helpdesk_closed(issue, customer)
   end
 
+  def self.deliver_attachment_added(attachment, sender)
+    send_attachment_added(attachment, sender)
+  end
+
   def self.deliver_helpdesk_notes_added(issue, journal, customer)
     send_helpdesk_notes_added(issue, journal, customer)
   end
@@ -39,6 +43,20 @@ class CustomerMailer < ActionMailer::Base
     @to = [customer.customer_email]
     # @url = url_for(:controller => 'helpdesk', :action => 'show', :enckey => @customer.encrypt_for_url)
     subj = "DCS Networks Helpdesk – Chat Ticketing Tracking #[#{@issue.id}] Ticket closed"
+    mail :to => @to,
+      :subject => subj
+  end
+
+  def send_attachment_added(attachment, sender)
+    @issue = attachment.container
+    @customer = sender
+    @attachment = attachment
+    @to = [sender.customer_email]
+    # @url = url_for(:controller => 'helpdesk', :action => 'show', :enckey => @customer.encrypt_for_url)
+    subj = "DCS Networks Helpdesk – Chat Ticketing Tracking #[#{@issue.id}] attachment added"
+    if sender.is_a?(ChatEmail)
+      subj = "DCS Networks Helpdesk – Email Ticketing Tracking #[#{@issue.id}] attachment added"
+    end
     mail :to => @to,
       :subject => subj
   end

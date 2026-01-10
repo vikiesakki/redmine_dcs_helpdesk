@@ -23,7 +23,9 @@
             # if journal.ic_id.present?
               j.chat_id.present? ? (ChatEmail.find(j.chat_id).try(:name).present? ? ChatEmail.find(j.chat_id).try(:name) : ChatEmail.find(j.chat_id).try(:customer_email)) : j.user.try(:name)
           %> <span class="local-time" data-time="<%= j.created_on.utc.iso8601 %>">
-  <%= j.created_on.utc.strftime("%Y-%m-%d %H:%M:%S UTC") %>
+  <%= Time.use_zone('Singapore') do
+            j.created_on.strftime("%Y-%m-%d %H:%M:%S SGT")
+        end %>
 </span></b>
               <span id="journal-9212-private_notes" class=""></span>
             </span>

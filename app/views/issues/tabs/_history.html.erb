@@ -1,6 +1,6 @@
 <%
   issue = tab[:locals][:issue]
-  journals = tab[:locals][:journals]
+  journals = tab[:locals][:journals].reverse
 %>
 
 <% reply_links = issue.notes_addable? -%>
