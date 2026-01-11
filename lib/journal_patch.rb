@@ -15,6 +15,7 @@ module JournalPatch
       return unless journalized_type == 'Issue'
       return if user.is_a?(AnonymousUser)
       return if IssueCustomer.where(issue_id: journalized_id).blank?  && ChatEmail.where(issue_id: journalized_id).blank?
+      return if details.pluck(:property).include?("attachment")
       if notes.present?
         ics = IssueCustomer.where(issue_id: journalized_id)
         ics.each do |ic|

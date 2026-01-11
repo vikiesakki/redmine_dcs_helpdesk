@@ -272,7 +272,7 @@
       <p><label>Description:</label> <span><%= @issue.description %></span></p>
     </div>
     <div id="journal_block">
-    <% @issue.journals.each do |j| %>
+    <% @issue.journals.reverse.each do |j| %>
     <% next if j.notes.blank? %>
     <div class="log-entry journals">
         <div id="change-<%= j.id %>" class="journal has-notes" data-controller="quote-reply">
@@ -282,10 +282,7 @@
               Updated by <b style="color: blue;"><%=
               j.chat_id.present? ? (ChatEmail.find(j.chat_id).try(:name).present? ? ChatEmail.find(j.chat_id).try(:name) : ChatEmail.find(j.chat_id).try(:customer_email)) : j.user.try(:name)
           %> <span class="local-time" data-time="<%= j.created_on.utc.in_time_zone('Singapore').iso8601 %>">
-    <%= Time.use_zone('Singapore') do
-            j.created_on.strftime("%Y-%m-%d %H:%M:%S SGT")
-        end
-    %>
+    <%= j.created_on.in_time_zone("Singapore").strftime("%d-%m-%Y %H:%M:%S") %>
 </span></b>
               <span id="journal-9212-private_notes" class=""></span>
             </span>

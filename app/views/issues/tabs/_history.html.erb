@@ -1,8 +1,13 @@
 <%
   issue = tab[:locals][:issue]
-  journals = tab[:locals][:journals].reverse
+  journals = tab[:locals][:journals]
 %>
-
+<style>
+  #tab-content-history{
+    height: 300px;
+    overflow-y: auto;
+  }
+</style>
 <% reply_links = issue.notes_addable? -%>
 <% for journal in journals %>
   <div id="change-<%= journal.id %>" class="<%= journal.css_classes %>" data-controller="quote-reply">
