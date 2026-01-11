@@ -52,6 +52,11 @@ class CustomerMailer < ActionMailer::Base
     @customer = sender
     @attachment = attachment
     @to = [sender.customer_email]
+    redmine_headers 'Project' => @issue.project.identifier,
+                    'Issue-Tracker' => @issue.tracker.name,
+                    'Issue-Id' => @issue.id,
+                    'Issue-Author' => @issue.author.login
+    redmine_headers 'Issue-Priority' => @issue.priority.name if @issue.priority
     # @url = url_for(:controller => 'helpdesk', :action => 'show', :enckey => @customer.encrypt_for_url)
     subj = "DCS Networks Helpdesk – Chat Ticketing Tracking #[#{@issue.id}] attachment added"
     if sender.is_a?(ChatEmail)
