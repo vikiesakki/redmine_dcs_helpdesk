@@ -49,7 +49,7 @@
 <%= form_tag({}, :data => {:cm_url => issues_context_menu_path}) do -%>
   <table class="list related-issues">
   <caption><%= l(:label_related_issues) %></caption>
-  <%- @issues.sort_by(&:id).each do |issue| -%>
+  <%- @issues.sort_by(&:id).reverse.each do |issue| -%>
     <tr class="hascontextmenu <%= issue.css_classes %>">
       <td class="checkbox"><%= check_box_tag 'ids[]', issue.id, false, :id => nil %></td>
       <td class="assigned_to"><%= assignee_avatar(issue.assigned_to, :size => 16) %></td>
