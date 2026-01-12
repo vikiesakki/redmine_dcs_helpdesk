@@ -25,6 +25,7 @@ module JournalPatch
         ces.each do |ce|
           CustomerMailer.deliver_attachment_added(self, ce).deliver_now
         end
+        return
       end
       if notes.present?
         ics = IssueCustomer.where(issue_id: journalized_id)
