@@ -52,6 +52,7 @@ class CustomerMailer < ActionMailer::Base
     @customer = sender
     @attachment = attachment
     @to = [sender.customer_email]
+    @j = JournalDetail.where(property: "attachment", prop_key: attachment.id.to_s).first.try(:journal)
     redmine_headers 'Project' => @issue.project.identifier,
                     'Issue-Tracker' => @issue.tracker.name,
                     'Issue-Id' => @issue.id,

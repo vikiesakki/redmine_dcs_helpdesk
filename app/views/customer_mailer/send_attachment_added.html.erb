@@ -1,6 +1,10 @@
 <p>Dear Customer,</p>
 <p>This is follow up for this ticket in our Chat Ticketing Tracking.</p>
+<% if @j.present? %>
+<%= @j.notes %>
+<% else %>
 <p>Attachment added by <%= @attachment.author.name %></p>
+<% end %>
 <hr />
 <p><b>Click to view: </b></p>
 <p>
