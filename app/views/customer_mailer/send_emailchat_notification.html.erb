@@ -11,6 +11,16 @@ been created. Our team will look into it and get back to you as soon as possible
 <p>A member of our team will review your request and respond shortly. Our standard
 response time is within 9am to 6pm from Monday to Friday, 9am to 1pm on Saturday
 during Singapore working hour</p>
+<% if @issue.attachments.present? %>
+	<% @issue.attachments.each do |att| %>
+	<p>
+		<em>
+			<%= link_to att.filename, service_download_url(att), class: 'icon-only icon-download ', title: l(:button_download), download: true, icon: 'download' -%>
+	  </em>
+	  </p>
+	<% end %>
+<% end %>
+
 <p>You will receive an email notification when our staff replies to your ticket</p>
 <p>Kind regards,</p>
 <p><%= @user.name %> of Helpdesk Team</p>
