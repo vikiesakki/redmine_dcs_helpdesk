@@ -63,7 +63,7 @@ class CustomerMailer < ActionMailer::Base
       subj = "DCS Networks Helpdesk – Email Ticketing Tracking #[#{@issue.id}] attachment added"
     end
     mail :to => @to,
-      :subject => subj
+      :subject => subj, reply_to: 'support@dcsnpl.sg'
   end
 
   def send_emailchat_notes_added(issue, journal, customer)
