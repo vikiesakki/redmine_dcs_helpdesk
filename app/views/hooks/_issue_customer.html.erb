@@ -89,7 +89,7 @@ xxx@abc.com,yyy@abc.com,zzz@abc.com)", style: 'width: 40%' %>
 		<%= text_field_tag :customer, nil, list: 'customers', id: 'customer_email', placeholder: "customer email (format as this
 xxx@abc.com)", style: 'width: 20%' %>
 		<datalist id="customers">
-    <% ChatEmail.all.each do |customer| %>
+    <% ChatEmail.where(issue_id: @issue.project.issues.pluck(:id)).each do |customer| %>
       <option value="<%= customer.customer_email %>"
               data-name="<%= customer.name %>">
     <% end %>
