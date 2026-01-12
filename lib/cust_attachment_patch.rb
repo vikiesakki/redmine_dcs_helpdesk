@@ -3,7 +3,7 @@ module CustAttachmentPatch
     base.send :include, InstanceMethods
     base.extend ClassMethods
     base.class_eval do
-      before_save :send_all_to_customer
+      # before_save :send_all_to_customer
     end
   end
 

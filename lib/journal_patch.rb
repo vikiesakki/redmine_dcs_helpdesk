@@ -15,7 +15,17 @@ module JournalPatch
       return unless journalized_type == 'Issue'
       return if user.is_a?(AnonymousUser)
       return if IssueCustomer.where(issue_id: journalized_id).blank?  && ChatEmail.where(issue_id: journalized_id).blank?
-      return if details.pluck(:property).include?("attachment")
+      if details.pluck(:property).include?("attachment")
+        # dd = details.select{|d| d.property == 'attachment' }
+        ics = IssueCustomer.where(issue_id: journalized_id)
+        ics.each do |ic|
+          CustomerMailer.deliver_attachment_added(self, ic).deliver_now
+        end
+        ces = ChatEmail.where(issue_id: journalized_id)
+        ces.each do |ce|
+          CustomerMailer.deliver_attachment_added(self, ce).deliver_now
+        end
+      end
       if notes.present?
         ics = IssueCustomer.where(issue_id: journalized_id)
         ics.each do |ic|

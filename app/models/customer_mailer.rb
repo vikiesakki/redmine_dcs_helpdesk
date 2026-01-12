@@ -21,8 +21,8 @@ class CustomerMailer < ActionMailer::Base
     send_helpdesk_closed(issue, customer)
   end
 
-  def self.deliver_attachment_added(attachment, sender)
-    send_attachment_added(attachment, sender)
+  def self.deliver_attachment_added(journal, sender)
+    send_attachment_added(journal, sender)
   end
 
   def self.deliver_helpdesk_notes_added(issue, journal, customer)
@@ -47,12 +47,11 @@ class CustomerMailer < ActionMailer::Base
       :subject => subj
   end
 
-  def send_attachment_added(attachment, sender)
-    @issue = attachment.container
+  def send_attachment_added(journal, sender)
+    @issue = journal.journalized
     @customer = sender
-    @attachment = attachment
     @to = [sender.customer_email]
-    @j = JournalDetail.where(property: "attachment", prop_key: attachment.id.to_s).first.try(:journal)
+    @j = journal
     redmine_headers 'Project' => @issue.project.identifier,
                     'Issue-Tracker' => @issue.tracker.name,
                     'Issue-Id' => @issue.id,

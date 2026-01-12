@@ -3,7 +3,7 @@ require 'issue_customer_hook'
 require 'journal_patch'
 require 'cust_issue_patch'
 require 'cust_mail_handler_patch'
-require 'cust_attachment_patch'
+# require 'cust_attachment_patch'
 Redmine::Plugin.register :redmine_helpdesk do
   name 'Redmine Helpdesk plugin'
   author 'Vignesh EsakkiMuthu'
