@@ -34,6 +34,7 @@ module CustMailHandlerPatch
           new_issue = Issue.where(reopen_id: issue.id).first
           if new_issue.blank?
             new_issue = issue.dup
+            new_issue.status_id = 1
             new_issue.reopen_id = issue.id
             new_issue.save(validate: false)
             oic = ChatEmail.where(customer_email: sender_email).first
