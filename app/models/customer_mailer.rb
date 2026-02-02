@@ -70,7 +70,9 @@ class CustomerMailer < ActionMailer::Base
     @customer = customer
     @issue = issue
     @journal = journal
+    ces = ChatEmail.where(issue_id: issue.id).pluck(:customer_email)
     @to = [customer.customer_email]
+    cc = ces - [customer.customer_email]
     redmine_headers 'Project' => @issue.project.identifier,
                     'Issue-Tracker' => @issue.tracker.name,
                     'Issue-Id' => @issue.id,
@@ -79,7 +81,7 @@ class CustomerMailer < ActionMailer::Base
     # @url = url_for(:controller => 'helpdesk', :action => 'show', :enckey => @customer.encrypt_for_url)
     subj = "DCS Networks Helpdesk – Email Ticketing Tracking #[#{@issue.id}] notes added"
     mail :to => @to,
-      :subject => subj, reply_to: 'support@dcsnpl.sg'
+      :subject => subj, cc: cc, reply_to: 'support@dcsnpl.sg'
   end
 
   def send_emailchat_notification(issue_chat, user)

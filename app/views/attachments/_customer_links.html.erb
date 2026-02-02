@@ -10,11 +10,11 @@
   <td><%= attachment.description unless attachment.description.blank? %></td>
   <% if attachment.author.is_a?(AnonymousUser) %>
   <td>
-    <span class="author"><%= format_time(attachment.created_on) %></span>
+    <span class="author"><%= Time.parse(attachment.created_on).in_time_zone("Singapore").strftime("%d-%m-%Y %H:%M:%S") %></span>
   </td>
   <% else %>
   <td>
-    <span class="author"><%= attachment.author %>, <%= format_time(attachment.created_on) %></span>
+    <span class="author"><%= attachment.author %>, <%= Time.parse(attachment.created_on).in_time_zone("Singapore").strftime("%d-%m-%Y %H:%M:%S") %></span>
   </td>
   <% end %>
 </tr>

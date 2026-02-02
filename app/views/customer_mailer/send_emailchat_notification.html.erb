@@ -3,7 +3,7 @@
 <p>Thank you for reaching out! We’ve received your request and a support ticket has
 been created. Our team will look into it and get back to you as soon as possible</p>
 <p><b>Your Request :</b></p>
-<p><%= @issue.description %></p>
+<p><%= textilizable(@issue, :description, :only_path => false) %></p>
 <p><b>Your ticket number is: #<%= @issue.id %></b></p>
 <p>Please use this number for any future communication regarding this issue.</p>
 <br />
