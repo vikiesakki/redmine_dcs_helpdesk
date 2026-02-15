@@ -19,7 +19,9 @@ module JournalPatch
         # dd = details.select{|d| d.property == 'attachment' }
         ics = IssueCustomer.where(issue_id: journalized_id)
         ics.each do |ic|
-          CustomerMailer.deliver_attachment_added(self, ic).deliver_now
+          if ic.send_email?
+            CustomerMailer.deliver_attachment_added(self, ic).deliver_now
+          end
         end
         ces = ChatEmail.where(issue_id: journalized_id)
         ces.each do |ce|
@@ -30,7 +32,9 @@ module JournalPatch
       if notes.present?
         ics = IssueCustomer.where(issue_id: journalized_id)
         ics.each do |ic|
-          CustomerMailer.deliver_helpdesk_notes_added(journalized, self, ic).deliver_now
+          if ic.send_email?
+            CustomerMailer.deliver_helpdesk_notes_added(journalized, self, ic).deliver_now
+          end
         end
         ces = ChatEmail.where(issue_id: journalized_id)
         # ces.each do |ce|

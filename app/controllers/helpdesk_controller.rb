@@ -48,7 +48,7 @@ class HelpdeskController < ApplicationController
 				IssueCustomer.create(_h)
 			end
 			ic = IssueCustomer.where(issue_id: params[:issue_id], customer_email: em).first
-			CustomerMailer.deliver_helpdesk_notification(ic).deliver_now
+			# CustomerMailer.deliver_helpdesk_notification(ic).deliver_now
 		end
 		issue = Issue.find params[:issue_id]
 		flash[:notice] = "Successfully updated the customer email"
@@ -66,8 +66,15 @@ class HelpdeskController < ApplicationController
 
 	def show
 		deckey = IssueCustomer.decrypt_url(params[:enckey])
-		email, issue_id = deckey.split('-')
-		@ic = IssueCustomer.where(issue_id: issue_id, customer_email: email).first
+		id, issue_id = deckey.split('-')
+		@ic = IssueCustomer.where(customer_email: id, issue_id: issue_id).first
+		if id.to_i.positive?
+			@ic = IssueCustomer.where(id: id).first
+		end
+		if request.post?
+			@ic.update(name: params[:name], customer_email: params[:customer_email], responded: 1, send_email: params[:email_notification])
+			@ic.reload
+		end
 		@issue = @ic.issue
 		@journals = @issue.journals
 	end
@@ -80,13 +87,17 @@ class HelpdeskController < ApplicationController
 	      return
 	    end
 	    deckey = IssueCustomer.decrypt_url(params[:enckey])
-		email, issue_id = deckey.split('-')
+		id, issue_id = deckey.split('-')
 		@issue = Issue.find issue_id
-		ic = IssueCustomer.where(issue_id: issue_id, customer_email: email).first
+		ic = IssueCustomer.where(customer_email: id, issue_id: issue_id).first
+		if id.to_i.positive?
+			ic = IssueCustomer.where(id: id).first
+		end
 		if ic.blank?
 			head :not_acceptable
 	      	return
 		end
+		email = ic.customer_email
 		@enckey = params[:enckey]
 	    @attachment = Attachment.new(:file => raw_request_body)
 	    @attachment.author = User.current
@@ -108,9 +119,12 @@ class HelpdeskController < ApplicationController
 	def refresh
 		@recent_id = params[:recent_journal_id]
 		deckey = IssueCustomer.decrypt_url(params[:enckey])
-		email, issue_id = deckey.split('-')
+		id, issue_id = deckey.split('-')
 		@last_id = params[:last_journal_id]
-		@ic = IssueCustomer.where(issue_id: issue_id, customer_email: email).first
+		@ic = IssueCustomer.where(customer_email: id, issue_id: issue_id).first
+		if id.to_i.positive?
+			@ic = IssueCustomer.where(id: id).first
+		end
 		@issue = @ic.issue
 		@journals = @issue.journals
 		respond_to do |format|
@@ -128,8 +142,11 @@ class HelpdeskController < ApplicationController
 
 	def close
 		deckey = IssueCustomer.decrypt_url(params[:enckey])
-		email, issue_id = deckey.split('-')
-		@ic = IssueCustomer.where(issue_id: issue_id, customer_email: email).first
+		id, issue_id = deckey.split('-')
+		@ic = IssueCustomer.where(customer_email: id, issue_id: issue_id).first
+		if id.to_i.positive?
+			@ic = IssueCustomer.where(id: id).first
+		end
 		@issue = @ic.issue
 		if @ic.blank? || @issue.blank?
 			flash[:error] = "Invalid request"
@@ -169,8 +186,12 @@ class HelpdeskController < ApplicationController
 
 	def add_notes
 		deckey = IssueCustomer.decrypt_url(params[:enckey])
-		email, issue_id = deckey.split('-')
-		@ic = IssueCustomer.where(issue_id: issue_id, customer_email: email).first
+		id, issue_id = deckey.split('-')
+		@ic = IssueCustomer.where(customer_email: id, issue_id: issue_id).first
+		if id.to_i.positive?
+			@ic = IssueCustomer.where(id: id).first
+		end
+		email = @ic.customer_email
 		@issue = @ic.issue
 		emails = params[:email].split(',')
 		customer_name = params[:customer_name]

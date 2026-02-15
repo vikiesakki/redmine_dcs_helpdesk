@@ -9,6 +9,7 @@
 		<tr>
 			<th>Name</th>
 			<th>Email</th>
+			<th>Send Email</th>
 			<th>Added by</th>
 			<th>Action</th>
 		</tr>
@@ -18,6 +19,7 @@
 			<tr>
 				<td><%= ic.name %></td>
 				<td><%= ic.customer_email %></td>
+				<td><%= ic.send_email %></td>
 				<td><%= ic.added_str %></td>
 				<td>
 					<a onclick="navigator.clipboard.writeText('<%= helpdesk_show_url(:enckey => ic.encrypt_for_url) %>')

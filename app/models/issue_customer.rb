@@ -2,7 +2,7 @@ class IssueCustomer < ApplicationRecord
 	belongs_to :issue
 
 	def encrypt_for_url
-	  str_email = "#{customer_email}-#{issue_id}"
+	  str_email = "#{id}-#{issue_id}"
     encrypted = ActiveSupport::MessageEncryptor.new(Issue.enckey).encrypt_and_sign(str_email)
     Base64.urlsafe_encode64(encrypted)
   end

@@ -17,7 +17,9 @@ module CustAttachmentPatch
       ces = ChatEmail.where(issue_id: container_id)
       return if ics.blank? && ces.blank?
       ics.each do |ic|
-        CustomerMailer.deliver_attachment_added(self, ic).deliver_now
+        if ic.send_email?
+          CustomerMailer.deliver_attachment_added(self, ic).deliver_now
+        end
       end
       ces.each do |ce|
         CustomerMailer.deliver_attachment_added(self, ce).deliver_now

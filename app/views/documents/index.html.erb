@@ -1,0 +1,75 @@
+<div class="contextual">
+<%= link_to sprite_icon('add', l(:label_document_new)), new_project_document_path(@project), :class => 'icon icon-add',
+            :onclick => 'showAndScrollTo("add-document", "document_title"); return false;' if User.current.allowed_to?(:add_documents, @project) %>
+</div>
+
+<div id="add-document" style="display:none;">
+<h2><%=l(:label_document_new)%></h2>
+<%= labelled_form_for @document, :url => project_documents_path(@project), :html => {:multipart => true} do |f| %>
+<%= render :partial => 'form', :locals => {:f => f} %>
+<p>
+  <%= submit_tag l(:button_create) %>
+  <%= link_to l(:button_cancel), "#", :onclick => '$("#add-document").hide(); return false;' %>
+</p>
+<% end %>
+</div>
+
+<h2><%=l(:label_document_plural)%></h2>
+
+<div id="document-list">
+<% if @grouped.empty? %><p class="nodata"><%= l(:label_no_data) %></p><% end %>
+
+<% @grouped.keys.sort.__send__(@sort_by == 'date' ? :reverse_each : :each) do |group| %>
+  <div class="document-group document-group-<%= @sort_by %>">
+    <h3 class="group-name"><%= group %></h3>
+    <%= render :partial => 'documents/document', :collection => @grouped[group] %>
+  </div>
+<% end %>
+
+<hr>
+<h2>Issue Documents</h2>
+  <% @project.issues.reverse.each do |iss| %>
+  <% next if iss.attachments.blank? %>
+    <div class="document-group document-group">
+      <h3 class="group-name"><%= "##{iss.id}-#{iss.subject}" %></h3>
+      <table>
+        <% for attachment in iss.attachments.reverse %>
+        <tr>
+          <td>
+            <%= link_to_attachment attachment, class: 'icon icon-attachment ', icon: 'attachment' -%>
+            <span class="size">(<%= number_to_human_size attachment.filesize %>)</span>
+            <%= link_to_attachment attachment, class: 'icon-only icon-download ', title: l(:button_download), download: true, icon: 'download' -%>
+          </td>
+          <td><%= attachment.description unless attachment.description.blank? %></td>
+          <td>
+            <span class="author"><%= attachment.author %>, <%= format_time(attachment.created_on) %></span>
+          </td>
+          <td>
+              <%= link_to sprite_icon('del', l(:button_delete)), attachment_path(attachment),
+                          :data => {:confirm => l(:text_are_you_sure)},
+                          :method => :delete,
+                          :class => 'delete icon-only icon-del ',
+                          :title => l(:button_delete) %>
+          </td>
+        </tr>
+        <% end %>
+        </table>
+    </div>
+  <% end %>
+</div>
+
+<% content_for :sidebar do %>
+  <h3><%= l(:label_sort_by, '') %></h3>
+  <ul>
+    <li><%= link_to(l(:field_category), {:sort_by => 'category'},
+                    :class => (@sort_by == 'category' ? 'selected' :nil)) %></li>
+    <li><%= link_to(l(:label_date), {:sort_by => 'date'},
+                    :class => (@sort_by == 'date' ? 'selected' :nil)) %></li>
+    <li><%= link_to(l(:field_title), {:sort_by => 'title'},
+                    :class => (@sort_by == 'title' ? 'selected' :nil)) %></li>
+    <li><%= link_to(l(:field_author), {:sort_by => 'author'},
+                    :class => (@sort_by == 'author' ? 'selected' :nil)) %></li>
+  </ul>
+<% end %>
+
+<% html_title(l(:label_document_plural)) -%>
