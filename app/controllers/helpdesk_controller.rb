@@ -66,16 +66,26 @@ class HelpdeskController < ApplicationController
 
 	def show
 		deckey = IssueCustomer.decrypt_url(params[:enckey])
-		id, issue_id = deckey.split('-')
-		@ic = IssueCustomer.where(customer_email: id, issue_id: issue_id).first
-		if id.to_i.positive?
-			@ic = IssueCustomer.where(id: id).first
+		sp = deckey.split('-')
+		issue_id = sp.first
+		@ic = IssueCustomer.new
+		if sp.size > 1
+			id, issue_id = deckey.split('-')	
+			@ic = IssueCustomer.where(customer_email: id, issue_id: issue_id).first
+			if id.to_i.positive?
+				@ic = IssueCustomer.where(id: id).first
+			end
 		end
+		# id, issue_id = deckey.split('-')
 		if request.post?
-			@ic.update(name: params[:name], customer_email: params[:customer_email], responded: 1, send_email: params[:email_notification])
-			@ic.reload
+			@ic = IssueCustomer.where(customer_email: params[:customer_email], issue_id: issue_id).first
+			if @ic.present?
+				@ic.update(name: params[:name], customer_email: params[:customer_email], responded: 1, send_email: params[:email_notification])
+			else
+				@ic = IssueCustomer.create(name: params[:name], issue_id: issue_id, customer_email: params[:customer_email], responded: 1, send_email: params[:email_notification])
+			end
 		end
-		@issue = @ic.issue
+		@issue = Issue.find(issue_id)
 		@journals = @issue.journals
 	end
 
@@ -87,12 +97,13 @@ class HelpdeskController < ApplicationController
 	      return
 	    end
 	    deckey = IssueCustomer.decrypt_url(params[:enckey])
-		id, issue_id = deckey.split('-')
+	    id = params[:ic]
+		issue_id = deckey.split('-').first
 		@issue = Issue.find issue_id
-		ic = IssueCustomer.where(customer_email: id, issue_id: issue_id).first
-		if id.to_i.positive?
-			ic = IssueCustomer.where(id: id).first
-		end
+		# ic = IssueCustomer.where(customer_email: id, issue_id: issue_id).first
+		# if id.to_i.positive?
+		ic = IssueCustomer.where(id: id).first
+		# end
 		if ic.blank?
 			head :not_acceptable
 	      	return
@@ -119,7 +130,8 @@ class HelpdeskController < ApplicationController
 	def refresh
 		@recent_id = params[:recent_journal_id]
 		deckey = IssueCustomer.decrypt_url(params[:enckey])
-		id, issue_id = deckey.split('-')
+		issue_id = deckey.split('-').first
+		id = params[:ic]
 		@last_id = params[:last_journal_id]
 		@ic = IssueCustomer.where(customer_email: id, issue_id: issue_id).first
 		if id.to_i.positive?
@@ -142,8 +154,9 @@ class HelpdeskController < ApplicationController
 
 	def close
 		deckey = IssueCustomer.decrypt_url(params[:enckey])
-		id, issue_id = deckey.split('-')
-		@ic = IssueCustomer.where(customer_email: id, issue_id: issue_id).first
+		id = params[:ic]
+		issue_id = deckey.split('-').first
+		@ic = IssueCustomer.where(id: id).first
 		if id.to_i.positive?
 			@ic = IssueCustomer.where(id: id).first
 		end
@@ -171,7 +184,9 @@ class HelpdeskController < ApplicationController
 		ics.each do |ic|
 			CustomerMailer.deliver_helpdesk_closed(@issue, ic).deliver_now
 		end
-		redirect_to helpdesk_show_path(params[:enckey])
+		@journals = @issue.journals
+		render :show
+		# redirect_to helpdesk_show_path(params[:enckey])
 	end
 
 	def journal_refresh
@@ -186,14 +201,15 @@ class HelpdeskController < ApplicationController
 
 	def add_notes
 		deckey = IssueCustomer.decrypt_url(params[:enckey])
-		id, issue_id = deckey.split('-')
+		id = params[:ic]
+		issue_id = deckey.split('-')
 		@ic = IssueCustomer.where(customer_email: id, issue_id: issue_id).first
 		if id.to_i.positive?
 			@ic = IssueCustomer.where(id: id).first
 		end
 		email = @ic.customer_email
 		@issue = @ic.issue
-		emails = params[:email].split(',')
+		emails = []
 		customer_name = params[:customer_name]
 		ic = IssueCustomer.where(customer_email: email).update(name: customer_name)
 		if params[:email].present?
@@ -224,7 +240,10 @@ class HelpdeskController < ApplicationController
 				flash[:error] = "notes cannot be blank"
 			end
 		end
-		redirect_to helpdesk_show_path(params[:enckey])
+		# @issue = Issue.find(issue_id)
+		@journals = @issue.journals
+		render :show
+		# redirect_to helpdesk_show_path(params[:enckey])
 	end
 
 	private

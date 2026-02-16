@@ -1,6 +1,14 @@
 <hr />
 <p>
   <strong>Invite customer for Chatting:</strong>
+  <a onclick="navigator.clipboard.writeText('<%= helpdesk_show_url(:enckey => IssueCustomer.encrypt_for_issue(@issue.id)) %>')
+					  .then(() => {
+					    alert('Link to copied!');
+					  })
+					  .catch(err => {
+					    console.error('Copy failed', err);
+					    alert('Failed to copy text');
+					  });" href="#">Copy Link</a>
 </p>
 <% ics = IssueCustomer.where(issue_id: @issue.id) %>
 <% if ics.present? %>
@@ -22,17 +30,9 @@
 				<td><%= ic.send_email %></td>
 				<td><%= ic.added_str %></td>
 				<td>
-					<a onclick="navigator.clipboard.writeText('<%= helpdesk_show_url(:enckey => ic.encrypt_for_url) %>')
-					  .then(() => {
-					    alert('Link to copied!');
-					  })
-					  .catch(err => {
-					    console.error('Copy failed', err);
-					    alert('Failed to copy text');
-					  });" href="#">Copy Link</a>
 					<%= link_to 'delete', helpdesk_destroy_path(@issue,ic), method: 'delete', "data-confirm"=>"Are you sure?", class: 'icon-only icon-del' %>
 						
-					</td>
+				</td>
 			</tr>
 		<% end %>
 	</tbody>
@@ -41,11 +41,12 @@
 <div>
 	<input type="hidden" id="last_journal_id" value="<%= @issue.journals.last.try(:id) %>" />
 	<input type="hidden" id="recent_journal_id" value="<%= @issue.journals.last.try(:id) %>" />
+	<!--
 	<%= form_tag helpdesk_update_path(@issue) do |f| %>
-		<!--<div class="label"><span></span>:</div> -->
 		<%= text_field_tag :customer, nil, placeholder: "(format as this
 xxx@abc.com,yyy@abc.com,zzz@abc.com)", style: 'width: 40%' %>
 		<input type="submit" id="submit_button" class="btn btn-block create-account" value="Submit">
+	-->
 	<% end %>
 </div>
 <% if ics.present? && !@issue.closed? %>

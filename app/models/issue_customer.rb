@@ -7,9 +7,15 @@ class IssueCustomer < ApplicationRecord
     Base64.urlsafe_encode64(encrypted)
   end
 
-    def self.decrypt_url(encoded_id)
-      encrypted = Base64.urlsafe_decode64(encoded_id)
-      ActiveSupport::MessageEncryptor.new(Issue.enckey).decrypt_and_verify(encrypted)
-    end
+  def self.encrypt_for_issue(issue_id)
+    str_email = "#{issue_id}"
+    encrypted = ActiveSupport::MessageEncryptor.new(Issue.enckey).encrypt_and_sign(str_email)
+    Base64.urlsafe_encode64(encrypted)
+  end
+
+  def self.decrypt_url(encoded_id)
+    encrypted = Base64.urlsafe_decode64(encoded_id)
+    ActiveSupport::MessageEncryptor.new(Issue.enckey).decrypt_and_verify(encrypted)
+  end
 
 end

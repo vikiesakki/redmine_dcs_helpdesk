@@ -1,5 +1,5 @@
 <div class="registration-form">
-    <% if @ic.responded? %>
+    <% if @issue.closed? || (@ic.present? && @ic.responded?) %>
     <%= form_tag helpdesk_add_notes_path(params[:enckey]) do |f| %>
     <!--<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-dialog">
@@ -62,15 +62,20 @@
     </div>
     <div class="form-group">
         <p>
-            <label>Could you share your name with me?:</label> <span><b>
-                <% if @issue.closed? %>
-                <%= @ic.name %>
-                <% else %>
-                <input type="text" style="padding: 10px;border: 2px solid;" name="customer_name" value="<%= @ic.name %>">
-                <% end %>
-                </b></span>
+            <% if @ic.try(:id).present? %>
+            <label>Name:</label> 
+                <span><b>
+                    <% if @issue.closed? %>
+                    <%= @ic.name %>
+                    <% else %>
+                    <input type="text" style="padding: 10px;border: 2px solid;" name="customer_name" value="<%= @ic.name %>">
+                    <% end %>
+                    </b>
+                </span>
+            <% end %>
         </p>
     </div>
+    <!--
     <div class="form-group">
         <p>
             <label>Would you like to invite your colleague?:</label> 
@@ -84,7 +89,7 @@ xxx@abc.com,yyy@abc.com,zzz@abc.com)" style="width: 75%;padding: 10px;border: 2p
             <% end %>
             </span>
         </p>
-    </div>
+    </div>-->
     <div class="form-group">
         <p>
             <label>Helpdesk Email:</label> <span><b><a href="mailto:helpdesk@dcsnpl.sg">helpdesk@dcsnpl.sg</a></b></span>
@@ -119,18 +124,19 @@ xxx@abc.com,yyy@abc.com,zzz@abc.com)" style="width: 75%;padding: 10px;border: 2p
     <% unless @issue.closed? %>
     <div class="form-group" id="new-attachments" style="display:inline-block;">
         <label><b>Attachments</b></label>
-        <p><%= render :partial => 'attachments/customer_attachment', :locals => {:container => @issue } %></p>
+        <p><%= render :partial => 'attachments/customer_attachment', :locals => {:container => @issue, ic: @ic } %></p>
     </div>
     <div class="form-group">
         <hr />
         <p>
             <input type="hidden" id="last_journal_id" value="<%= @journals.last.try(:id).to_i %>">
             <input type="hidden" id="recent_journal_id" value="<%= @journals.last.try(:id).to_i %>">
+            <input type="hidden" name="ic" value="<%= @ic.try(:id).to_i %>">
             <label style="color: red;"><b>Your Message to us:</b></label>
             <%= text_area_tag 'notes', '', rows: 10, style: 'border: 2px solid', placeholder: 'Please reply here' %>
         </p>
         <p><input style="width: auto;" type="submit" id="submit_button" class="btn btn-block create-account" value="Submit" onclick="document.getElementById('email').value = ''">
-        <a id="close-ticket" data-base-url="<%= helpdesk_close_path(params[:enckey]) %>" href="#" style="background: red;" class="btn btn-block create-account">Problem Solved</a>
+        <a id="close-ticket" data-base-url="<%= helpdesk_close_path(params[:enckey]) %>?ic=<%= @ic.id %>" href="#" style="background: red;" class="btn btn-block create-account">Problem Solved</a>
         </p>
     </div>
     <% end %>
@@ -145,18 +151,36 @@ xxx@abc.com,yyy@abc.com,zzz@abc.com)" style="width: 75%;padding: 10px;border: 2p
       if (confirm('Are you sure you want to close this ticket?')) {
         const lastId = document.getElementById('notes').value;
         const baseUrl = this.dataset.baseUrl;
-        const finalUrl = `${baseUrl}?msg=${encodeURIComponent(lastId)}`;
+        const finalUrl = `${baseUrl}?msg=${encodeURIComponent(lastId)}&ic=<%= @ic.id %>`;
         window.location.href = finalUrl;
       }
     });
 
     setInterval(function() {
       Rails.ajax({
-        url: "<%= helpdesk_refresh_path(params[:enckey]) %>?last_journal_id="+ document.getElementById('last_journal_id').value+ "&recent_journal_id="+ document.getElementById('recent_journal_id').value,
+        url: "<%= helpdesk_refresh_path(params[:enckey]) %>?ic=<%= @ic.id %>&last_journal_id="+ document.getElementById('last_journal_id').value+ "&recent_journal_id="+ document.getElementById('recent_journal_id').value,
         type: "GET"
       });
     }, 10000);
 </script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const fileInput = document.querySelector('.file_selector.filedrop');
+
+  if (!fileInput) return;
+
+  let path = fileInput.getAttribute('data-upload-path');
+
+  if (path && !path.includes('ic=<%= @ic.id %>')) {
+    // if already has query params → append with &
+      path += '&ic=<%= @ic.id %>';
+    fileInput.setAttribute('data-upload-path', path);
+  }
+});
+</script>
+
+
 <% end %>
 <% else %>
 <%= form_tag helpdesk_show_path(params[:enckey]) do |f| %>
