@@ -83,6 +83,9 @@ class HelpdeskController < ApplicationController
 				@ic.update(name: params[:name], customer_email: params[:customer_email], responded: 1, send_email: params[:email_notification])
 			else
 				@ic = IssueCustomer.create(name: params[:name], issue_id: issue_id, customer_email: params[:customer_email], responded: 1, send_email: params[:email_notification])
+				if @ic.send_email
+					CustomerMailer.deliver_helpdesk_notification(@ic).deliver_now
+				end
 			end
 		end
 		@issue = Issue.find(issue_id)
