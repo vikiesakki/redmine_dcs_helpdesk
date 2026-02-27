@@ -95,6 +95,25 @@ xxx@abc.com,yyy@abc.com,zzz@abc.com)" style="width: 75%;padding: 10px;border: 2p
             <label>Helpdesk Email:</label> <span><b><a href="mailto:helpdesk@dcsnpl.sg">helpdesk@dcsnpl.sg</a></b></span>
         </p>
     </div>
+    <% unless @issue.closed? %>
+        <div class="form-group" id="new-attachments" style="display:inline-block;">
+            <label><b>Attachments</b></label>
+            <p><%= render :partial => 'attachments/customer_attachment', :locals => {:container => @issue, ic: @ic } %></p>
+        </div>
+        <div class="form-group">
+            <hr />
+            <p>
+                <input type="hidden" id="last_journal_id" value="<%= @journals.last.try(:id).to_i %>">
+                <input type="hidden" id="recent_journal_id" value="<%= @journals.last.try(:id).to_i %>">
+                <input type="hidden" name="ic" value="<%= @ic.try(:id).to_i %>">
+                <label style="color: red;"><b>Your Message to us:</b></label>
+                <%= text_area_tag 'notes', '', rows: 10, style: 'border: 2px solid', placeholder: 'Please reply here' %>
+            </p>
+            <p><input style="width: auto;" type="submit" id="submit_button" class="btn btn-block create-account" value="Submit" onclick="document.getElementById('email').value = ''">
+            <a id="close-ticket" data-base-url="<%= helpdesk_close_path(params[:enckey]) %>?ic=<%= @ic.id %>" href="#" style="background: red;" class="btn btn-block create-account">Problem Solved</a>
+            </p>
+        </div>
+    <% end %>
     <div id="journal_block">
     <% @journals.each do |j| %>
     <% next if j.notes.blank? %>
@@ -121,25 +140,6 @@ xxx@abc.com,yyy@abc.com,zzz@abc.com)" style="width: 75%;padding: 10px;border: 2p
     <div class="form-group" id="attachments_link">
         <p><%= render :partial => 'attachments/customer_links', :locals => {:attachments => @issue.attachments, container: @issue } %></p>
     </div>
-    <% unless @issue.closed? %>
-    <div class="form-group" id="new-attachments" style="display:inline-block;">
-        <label><b>Attachments</b></label>
-        <p><%= render :partial => 'attachments/customer_attachment', :locals => {:container => @issue, ic: @ic } %></p>
-    </div>
-    <div class="form-group">
-        <hr />
-        <p>
-            <input type="hidden" id="last_journal_id" value="<%= @journals.last.try(:id).to_i %>">
-            <input type="hidden" id="recent_journal_id" value="<%= @journals.last.try(:id).to_i %>">
-            <input type="hidden" name="ic" value="<%= @ic.try(:id).to_i %>">
-            <label style="color: red;"><b>Your Message to us:</b></label>
-            <%= text_area_tag 'notes', '', rows: 10, style: 'border: 2px solid', placeholder: 'Please reply here' %>
-        </p>
-        <p><input style="width: auto;" type="submit" id="submit_button" class="btn btn-block create-account" value="Submit" onclick="document.getElementById('email').value = ''">
-        <a id="close-ticket" data-base-url="<%= helpdesk_close_path(params[:enckey]) %>?ic=<%= @ic.id %>" href="#" style="background: red;" class="btn btn-block create-account">Problem Solved</a>
-        </p>
-    </div>
-    <% end %>
 <audio style="display: none;" id="ding" src="/assets/audio/ding-101492.mp3"></audio>
 <% end %>
 <% unless @issue.closed? %>
