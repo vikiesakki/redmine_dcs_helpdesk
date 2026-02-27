@@ -7,6 +7,6 @@ match 'helpdesk/:enckey', as: 'helpdesk_show', to: "helpdesk#show", via: [:post,
 match 'helpdesk/:enckey/close', as: 'helpdesk_close', to: "helpdesk#close", via: [:post, :get]
 match 'helpdesk/:enckey/refresh', as: 'helpdesk_refresh', to: "helpdesk#refresh", via: [:post, :get]
 match 'helpdesk/:enckey/add-notes', as: 'helpdesk_add_notes', to: "helpdesk#add_notes", via: [:post, :get]
-match 'helpdesk/:enckey/upload/:ic', as: 'helpdesk_upload', to: "helpdesk#upload", via: [:post]
+match 'helpdesk/:enckey/upload/:ic(.:format)', as: 'helpdesk_upload', to: "helpdesk#upload", via: [:post]
 match 'helpdesk/:enckey/remove/:id', as: 'helpdesk_remove', to: "helpdesk#remove", via: [:delete]
 match 'journal/:issue_id/refresh', as: 'journal_refresh', to: "helpdesk#journal_refresh", via: [:post, :get]
