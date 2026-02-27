@@ -9,6 +9,9 @@ module CustMailHandlerPatch
 
       alias_method :dispatch_without_cust_patch, :dispatch
       alias_method :dispatch, :dispatch_with_cust_patch
+
+      alias_method :target_project_without_cust_patch, :target_project
+      alias_method :target_project, :target_project_with_cust_patch
       
     end
   end
@@ -112,6 +115,25 @@ module CustMailHandlerPatch
       end
     end
 
+    def target_project_with_cust_patch
+      # TODO: other ways to specify project:
+      # * parse the email To field
+      # * specific project (eg. Setting.mail_handler_target_project)
+      target = get_project_from_receiver_addresses
+      target ||= Project.find_by_identifier(get_keyword(:project))
+      if target.nil?
+        # Invalid project keyword, use the project specified as the default one
+        default_project = handler_options[:issue][:project]
+        if default_project.present?
+          target = Project.find_by_identifier(default_project)
+        end
+      end
+      if target.nil?
+        CustomerMailer.deliver_noreply_notification(sender_email).deliver_now
+        raise MissingInformation, 'Unable to determine target project'
+      end
+      target
+    end
 
   end
 end
