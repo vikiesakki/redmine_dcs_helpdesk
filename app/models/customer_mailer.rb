@@ -37,12 +37,24 @@ class CustomerMailer < ActionMailer::Base
     send_emailchat_closed(issue, customer)
   end
 
+  def self.deliver_noreply_notification(to)
+    send_noreply_notification(to)
+  end
+
   def send_emailchat_closed(issue, customer)
     @issue = issue
     @customer = customer
     @to = [customer.customer_email]
     # @url = url_for(:controller => 'helpdesk', :action => 'show', :enckey => @customer.encrypt_for_url)
     subj = "DCS Networks Helpdesk – Chat Ticketing Tracking #[#{@issue.id}] Ticket closed"
+    mail :to => @to,
+      :subject => subj
+  end
+
+  def send_noreply_notification(to)
+    @to = [to]
+    # @url = url_for(:controller => 'helpdesk', :action => 'show', :enckey => @customer.encrypt_for_url)
+    subj = "DCS Networks Helpdesk – auto reply"
     mail :to => @to,
       :subject => subj
   end
