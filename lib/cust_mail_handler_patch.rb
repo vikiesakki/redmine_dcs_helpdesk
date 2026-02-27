@@ -129,6 +129,7 @@ module CustMailHandlerPatch
         end
       end
       if target.nil?
+        sender_email = email.from.to_a.first.to_s.strip
         CustomerMailer.deliver_noreply_notification(sender_email).deliver_now
         raise MissingInformation, 'Unable to determine target project'
       end
