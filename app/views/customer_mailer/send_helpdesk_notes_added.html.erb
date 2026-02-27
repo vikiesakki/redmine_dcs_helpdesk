@@ -5,7 +5,7 @@
 <p><b>Notes: </b></p>
 <p>
 	<em>
-		<%= @journal.notes %></p>
+		<%= textilizable(@journal, :notes, :only_path => false) %>
 	</em>
 <hr />
 <p>Please click the link to reply back</p>
