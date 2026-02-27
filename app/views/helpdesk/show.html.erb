@@ -174,7 +174,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (path && !path.includes('ic=<%= @ic.id %>')) {
     // if already has query params → append with &
-      path += '&ic=<%= @ic.id %>';
+      path += '?ic=<%= @ic.id %>';
     fileInput.setAttribute('data-upload-path', path);
   }
 });
