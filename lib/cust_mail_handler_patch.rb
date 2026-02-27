@@ -130,7 +130,13 @@ module CustMailHandlerPatch
       end
       if target.nil?
         sender_email = email.from.to_a.first.to_s.strip
-        CustomerMailer.deliver_noreply_notification(sender_email).deliver_now
+        begin
+          CustomerMailer
+            .deliver_noreply_notification(sender_email)
+            .deliver_now
+        rescue => e
+          Rails.logger.error("Mail send failed: #{e.message}")
+        end
         raise MissingInformation, 'Unable to determine target project'
       end
       target
