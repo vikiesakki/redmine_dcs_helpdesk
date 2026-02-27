@@ -1,8 +1,19 @@
 <p>Dear Customer,</p>
 <p>This is follow up for this ticket in our Chat Ticketing Tracking.</p>
-<p>Notes added by <%= @journal.user.name %></p>
+<p>New message added by <%= @journal.user.name %></p>
 <hr />
-<p><b>Notes: </b></p>
+<p><a href="https://project.oneplan.cloud/helpdesk/<%= IssueCustomer.encrypt_for_issue(@journal.issue.id) %>" style="
+            display:inline-block;
+            padding:10px 22px;
+            font-family: Arial, sans-serif;
+            font-size:14px;
+            color:#ffffff;
+            background: blue;
+            text-decoration:none;
+            font-weight:600;
+            border:1px solid #085A73;
+            border-radius:3px;" target="_blank">View Your Ticket</a></p>
+<p><b>Message: </b></p>
 <p>
 	<em>
 		<%= textilizable(@journal, :notes, :only_path => false) %>
