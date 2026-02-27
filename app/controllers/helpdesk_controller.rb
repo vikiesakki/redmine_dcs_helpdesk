@@ -96,7 +96,7 @@ class HelpdeskController < ApplicationController
 	    # Make sure that API users get used to set this content type
 	    # as it won't trigger Rails' automatic parsing of the request body for parameters
 	    unless request.media_type == 'application/octet-stream'
-	      head :not_acceptable
+	      # head :not_acceptable
 	      return
 	    end
 	    deckey = IssueCustomer.decrypt_url(params[:enckey])
@@ -108,7 +108,7 @@ class HelpdeskController < ApplicationController
 		ic = IssueCustomer.where(id: id).first
 		# end
 		if ic.blank?
-			head :not_acceptable
+			# head :not_acceptable
 	      	return
 		end
 		email = ic.customer_email
