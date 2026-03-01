@@ -247,7 +247,7 @@ class HelpdeskController < ApplicationController
 		end
 		# @issue = Issue.find(issue_id)
 		@journals = @issue.journals
-		render :show
+		# render :show
 		redirect_to helpdesk_show_path(params[:enckey], ic: @ic.id)
 	end
 
