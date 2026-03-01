@@ -76,6 +76,8 @@ class HelpdeskController < ApplicationController
 				@ic = IssueCustomer.where(id: id).first
 			end
 		end
+		ic_id = params[:ic]
+		@ic = IssueCustomer.find(ic_id)
 		# id, issue_id = deckey.split('-')
 		if request.post?
 			@ic = IssueCustomer.where(customer_email: params[:customer_email], issue_id: issue_id).first
@@ -246,7 +248,7 @@ class HelpdeskController < ApplicationController
 		# @issue = Issue.find(issue_id)
 		@journals = @issue.journals
 		render :show
-		# redirect_to helpdesk_show_path(params[:enckey])
+		redirect_to helpdesk_show_path(params[:enckey], ic: @ic.id)
 	end
 
 	private
