@@ -1,4 +1,4 @@
-<% @journals.each do |j| %>
+<% @journals.reverse.each do |j| %>
 <% next if j.notes.blank? %>
 <div class="form-group journals">
     <div id="change-<%= j.id %>" class="journal has-notes" data-controller="quote-reply">
