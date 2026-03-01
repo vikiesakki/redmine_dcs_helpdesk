@@ -190,8 +190,8 @@ class HelpdeskController < ApplicationController
 			CustomerMailer.deliver_helpdesk_closed(@issue, ic).deliver_now
 		end
 		@journals = @issue.journals
-		render :show
-		# redirect_to helpdesk_show_path(params[:enckey])
+		# render :show
+		redirect_to helpdesk_show_path(params[:enckey], ic: @ic.id)
 	end
 
 	def journal_refresh
