@@ -11,3 +11,9 @@ Redmine::Plugin.register :redmine_helpdesk do
   version '0.0.1'
   url 'https://redmineconsultation.com'
 end
+Rails.application.config.to_prepare do
+  require_dependency 'account_controller'
+  require_relative 'lib/account_controller_2fa_trust_patch'
+
+  AccountController.prepend(AccountController2faTrustPatch)
+end
